@@ -1493,3 +1493,50 @@ nav {
   object-position: center;
   display: block;
 }
+/* ================================
+   Featured project thumbnail consistency
+   ================================ */
+
+#projects .project-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  max-height: none;
+  overflow: hidden;
+  background: #07101a;
+  border-radius: 18px 18px 0 0;
+}
+
+#projects .project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover !important;
+  object-position: center center;
+  display: block;
+}
+
+/* Keep project cards equal and clean */
+#projects .project {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+#projects .project-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+#projects .project-content p {
+  flex: 1;
+}
+
+#projects .project-tags {
+  margin-top: auto;
+}
+
+#projects .project-cta {
+  margin-top: 16px;
+}
