@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta
+    name="description"
+    content="LM-GT3 aerodynamic development case study by Samvedh Shetty — CAD surfacing, CFD validation, aero mapping and simulated lap-time evaluation."
+  />
+  <title>LM-GT3 Aerodynamic Development | Samvedh Shetty</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link href="../assets/styles.css" rel="stylesheet"/>
+
+  <style>
+    .project-hero { padding: 72px 0 48px; }
+    .breadcrumb { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; font-size: 0.95rem; opacity: 0.8; }
+    .breadcrumb a { color: inherit; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.25); }
+    .project-intro { max-width: 82ch; opacity: 0.92; font-size: 1.08rem; line-height: 1.7; }
+    .metric-strip { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 14px; margin: 28px 0 8px; }
+    .metric-card { padding: 18px 16px; border-radius: 16px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); }
+    .metric-card strong { display: block; font-size: 1.35rem; line-height: 1.1; margin-bottom: 7px; }
+    .metric-card span { display: block; font-size: 0.9rem; opacity: 0.82; line-height: 1.35; }
+    .project-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 28px; align-items: start; }
+    .case-section { margin: 48px 0; }
+    .case-section:first-child { margin-top: 0; }
+    .section-kicker { display: inline-block; margin-bottom: 8px; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; opacity: 0.65; }
+    .section-lead { opacity: 0.9; max-width: 78ch; line-height: 1.65; }
+    .evidence-card { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.92fr); gap: 26px; align-items: center; margin: 26px 0 42px; padding: 22px; border-radius: 20px; background: rgba(0,0,0,0.035); border: 1px solid rgba(0,0,0,0.08); }
+    .evidence-card.reverse { grid-template-columns: minmax(280px, 0.92fr) minmax(0, 1.08fr); }
+    .evidence-card.reverse .evidence-media { order: 2; }
+    .evidence-card.reverse .evidence-text { order: 1; }
+    .evidence-media img { width: 100%; display: block; border-radius: 14px; background: #fff; border: 1px solid rgba(0,0,0,0.08); }
+    .evidence-text h3 { margin: 4px 0 10px; }
+    .evidence-text p { opacity: 0.9; line-height: 1.6; }
+    .evidence-text ul { margin-top: 12px; }
+    .evidence-label { display: inline-block; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; opacity: 0.65; }
+    .image-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
+    .image-pair figure, .chart-grid figure { margin: 0; }
+    .image-pair figcaption, .chart-grid figcaption { margin-top: 8px; font-size: 0.92rem; opacity: 0.78; line-height: 1.4; }
+    .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 22px; }
+    .chart-grid img { width: 100%; display: block; border-radius: 14px; background: #fff; border: 1px solid rgba(0,0,0,0.08); }
+    .slideshow-container { position: relative; margin: 28px 0 42px; background: #0f1720; border-radius: 18px; overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
+    .slide { display: none; animation: fadeSlide 0.45s ease; }
+    .slide.active { display: block; }
+    .slide img { width: 100%; display: block; background: #ffffff; }
+    .slide-caption { padding: 20px 24px 28px; color: #f3f6fa; }
+    .slide-caption h3 { margin: 0 0 8px; font-size: 1.1rem; }
+    .slide-caption p { margin: 0; opacity: 0.88; line-height: 1.5; }
+    .slide-btn { position: absolute; top: 45%; transform: translateY(-50%); background: rgba(15, 23, 32, 0.75); color: white; border: none; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: 20px; z-index: 2; }
+    .slide-btn:hover { background: rgba(15, 23, 32, 0.95); }
+    .slide-btn.prev { left: 16px; }
+    .slide-btn.next { right: 16px; }
+    .slide-dots { display: flex; justify-content: center; gap: 10px; padding: 0 0 20px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.35); cursor: pointer; }
+    .dot.active { background: white; }
+    .results-box { padding: 24px; border-radius: 20px; background: rgba(0,0,0,0.035); border: 1px solid rgba(0,0,0,0.08); }
+    .results-box ul { margin-bottom: 0; }
+    .reflection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+    .reflection-card { padding: 18px; border-radius: 16px; background: rgba(0,0,0,0.035); border: 1px solid rgba(0,0,0,0.08); }
+    .reflection-card h3 { margin-top: 0; }
+    .sidebar-card { margin-bottom: 24px; }
+    .back-link { display: inline-block; margin-top: 18px; text-decoration: none; border-bottom: 1px solid rgba(20,20,20,0.25); color: inherit; }
+    @keyframes fadeSlide { from { opacity: 0.3; } to { opacity: 1; } }
+    @media (max-width: 960px) {
+      .project-layout { grid-template-columns: 1fr; }
+      .metric-strip { grid-template-columns: repeat(2, 1fr); }
+      .evidence-card, .evidence-card.reverse { grid-template-columns: 1fr; }
+      .evidence-card.reverse .evidence-media, .evidence-card.reverse .evidence-text { order: initial; }
+      .chart-grid, .image-pair, .reflection-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .metric-strip { grid-template-columns: 1fr; }
+      .slide-btn { width: 38px; height: 38px; }
+    }
+    /* ================================
+   FINAL PROJECT PAGE CLEANUP PATCH
+   Paste at bottom of this page's <style> block
+   ================================ */
+
+/* Make layout tighter */
+.project-hero {
+  padding: 42px 0 30px !important;
+}
+
+.project-intro {
+  margin-bottom: 0 !important;
+}
+
+.metric-strip {
+  margin: 18px 0 0 !important;
+  gap: 10px !important;
+}
+
+.metric-card {
+  padding: 12px 14px !important;
+}
+
+.metric-card strong {
+  font-size: 1.15rem !important;
+  margin-bottom: 4px !important;
+}
+
+.case-section {
+  margin: 30px 0 !important;
+}
+
+.case-section:first-child {
+  margin-top: 0 !important;
+}
+
+.panel {
+  padding: 24px !important;
+}
+
+.case-section h2 {
+  margin-top: 0.25em !important;
+  margin-bottom: 0.35em !important;
+}
+
+.case-section h3 {
+  margin-top: 0.2em !important;
+  margin-bottom: 0.35em !important;
+}
+
+.section-kicker {
+  margin-bottom: 4px !important;
+}
+
+.case-section p {
+  margin-top: 0 !important;
+  margin-bottom: 0.65em !important;
+}
+
+.case-section ul,
+.case-section ol {
+  margin-top: 0.35em !important;
+  margin-bottom: 0.6em !important;
+}
+
+.case-section li {
+  margin-bottom: 0.25em !important;
+}
+
+.evidence-card {
+  margin: 16px 0 24px !important;
+  padding: 18px !important;
+  gap: 20px !important;
+}
+
+.image-pair,
+.chart-grid,
+.reflection-grid {
+  margin-top: 12px !important;
+  gap: 18px !important;
+}
+
+.slideshow-container {
+  margin: 16px 0 26px !important;
+}
+
+.slide-caption {
+  padding: 12px 16px 16px !important;
+}
+
+.slide-caption h3 {
+  margin-bottom: 4px !important;
+}
+
+.slide-caption p {
+  line-height: 1.38 !important;
+}
+
+.slide-dots {
+  padding-bottom: 12px !important;
+}
+
+.results-box,
+.reflection-card {
+  padding: 16px !important;
+}
+
+/* Fix captions looking like part of image */
+.chart-grid figure,
+.image-pair figure {
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+.chart-grid img,
+.image-pair img {
+  background: #ffffff !important;
+  padding: 12px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,255,255,0.14) !important;
+  display: block !important;
+}
+
+.chart-grid figcaption,
+.image-pair figcaption {
+  color: rgba(235, 241, 248, 0.82) !important;
+  background: transparent !important;
+  margin-top: 8px !important;
+  padding: 0 !important;
+  font-size: 0.84rem !important;
+  line-height: 1.35 !important;
+}
+
+/* Stop images from being squeezed badly */
+img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+.evidence-media img,
+.chart-grid img,
+.image-pair img,
+.slide img {
+  object-fit: contain !important;
+}
+
+/* Sidebar spacing cleanup */
+.sidebar-card {
+  margin-bottom: 16px !important;
+}
+
+.sidebar-card h3 {
+  margin-top: 0 !important;
+  margin-bottom: 6px !important;
+}
+
+.sidebar-card ul {
+  margin-top: 4px !important;
+  margin-bottom: 0 !important;
+}
+
+.sidebar-card li {
+  margin-bottom: 0.25em !important;
+}
+
+/* Make layout adapt better */
+.project-layout {
+  grid-template-columns: minmax(0, 1fr) clamp(260px, 24vw, 320px) !important;
+  gap: clamp(18px, 2.5vw, 32px) !important;
+}
+
+.panel,
+article,
+aside,
+.case-section,
+.evidence-card,
+.slideshow-container {
+  min-width: 0 !important;
+}
+
+.metric-strip {
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)) !important;
+}
+
+.evidence-card,
+.evidence-card.reverse {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)) !important;
+}
+
+.evidence-card.reverse .evidence-media,
+.evidence-card.reverse .evidence-text {
+  order: initial !important;
+}
+
+.image-pair,
+.chart-grid,
+.reflection-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)) !important;
+}
+
+/* Sidebar drops below when space is tight */
+@media (max-width: 1100px) {
+  .project-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  aside.panel {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)) !important;
+    gap: 16px !important;
+  }
+}
+
+/* Mobile tightening */
+@media (max-width: 760px) {
+  .project-hero {
+    padding: 34px 0 24px !important;
+  }
+
+  .panel {
+    padding: 18px !important;
+  }
+
+  .case-section {
+    margin: 26px 0 !important;
+  }
+
+  .metric-card {
+    padding: 12px !important;
+  }
+
+  .slide-caption {
+    padding: 12px 14px 16px !important;
+  }
+}
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav>
+    <div class="container">
+      <a aria-label="Home" href="../index.html" style="text-decoration:none; color:inherit;">
+        <div class="logo">Samvedh Shetty</div>
+      </a>
+      <ul>
+        <li><a href="../index.html#about">About</a></li>
+        <li><a href="../index.html#education">Education</a></li>
+        <li><a href="../index.html#skills">Skills</a></li>
+        <li><a href="../index.html#projects">Projects</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main">
+    <header class="project-hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="../index.html#projects">Projects</a>
+          <span>›</span>
+          <span>LM-GT3 Aerodynamic Development</span>
+        </div>
+
+        <h1>LM-GT3 Aerodynamic Development</h1>
+
+        <p class="project-intro">
+          Simulation-led aerodynamic development of an LMGT3-style concept, combining CAD surface design,
+          CFD validation, aero-package iteration, aero-map generation and simulated lap-time evaluation.
+          The project followed an end-to-end workflow from regulatory packaging and CFD-ready geometry
+          through to aerodynamic performance metrics and vehicle-level impact.
+        </p>
+
+        <div class="project-tags" style="margin-top: 18px;">
+          <span class="tag">CAD Surfacing</span>
+          <span class="tag">Aero Packaging</span>
+          <span class="tag">STAR-CCM+</span>
+          <span class="tag">MATLAB</span>
+          <span class="tag">ChassisSim</span>
+          <span class="tag">Aero Mapping</span>
+        </div>
+
+        <div class="metric-strip" aria-label="Headline project results">
+          <div class="metric-card"><strong>≈14M</strong><span>STAR-CCM+ CFD cells in selected mesh</span></div>
+          <div class="metric-card"><strong>y+ &lt; 5</strong><span>wall-resolved near-wall target</span></div>
+          <div class="metric-card"><strong>L/D 2.24</strong><span>predicted final aero efficiency</span></div>
+          <div class="metric-card"><strong>78%</strong><span>downforce retained at 5° yaw</span></div>
+          <div class="metric-card"><strong>3.97s</strong><span>simulated Portimão lap-time reduction</span></div>
+        </div>
+      </div>
+    </header>
+
+    <section style="padding-top: 0;">
+      <div class="container project-layout">
+        <article class="panel">
+
+          <section class="case-section">
+            <span class="section-kicker">Project summary</span>
+            <h2 style="margin-top:0;">What this project demonstrates</h2>
+            <p>
+              This case study demonstrates a complete motorsport aero development workflow: surface design,
+              simulation credibility, controlled aerodynamic iteration, aero-map generation and lap-time interpretation.
+              The emphasis is not only on producing CFD plots, but on turning aerodynamic evidence into engineering
+              decisions.
+            </p>
+
+            <h2>Engineering question</h2>
+            <p>
+              How can an LMGT3-style aerodynamic package be improved for efficiency, stability and robustness,
+              while connecting the CFD results to vehicle-level performance rather than treating downforce and drag
+              coefficients in isolation?
+            </p>
+
+            <h2>Objectives</h2>
+            <ul>
+              <li><strong>Surface design:</strong> create CFD-ready aerodynamic surfaces within an LMGT3-style packaging envelope.</li>
+              <li><strong>CFD credibility:</strong> establish a baseline through mesh convergence, near-wall checks and reference validation.</li>
+              <li><strong>Controlled iteration:</strong> compare splitter, floor, diffuser, wide-body and rear-wing changes like-for-like.</li>
+              <li><strong>Performance metrics:</strong> judge iterations using efficiency, load contribution, yaw robustness and balance sensitivity.</li>
+              <li><strong>Vehicle impact:</strong> convert CFD outputs into aero maps and evaluate simulated lap-time effect at Portimão.</li>
+            </ul>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">01 — Surface design</span>
+            <h2>Surface Design &amp; Regulatory Packaging</h2>
+            <p class="section-lead">
+              The project began with surface development around an LMGT3-style regulatory envelope.
+              The goal was to create clean, CFD-ready aerodynamic geometry that allowed controlled
+              comparison between iterations.
+            </p>
+
+            <div class="evidence-card">
+              <div class="evidence-media">
+                <img src="LMGT3/lmgt3-final-cad-iteration6.png" alt="Final LM-GT3 aerodynamic surface design showing splitter, wide-body, floor skirts and rear wing"/>
+              </div>
+              <div class="evidence-text">
+                <span class="evidence-label">CAD-to-CFD foundation</span>
+                <h3>CFD-ready aerodynamic surfaces</h3>
+                <p>
+                  The surface design focused on aerodynamic intent and simulation usability: clean intersections,
+                  controlled edges, repeatable geometry changes and clear device zones for the splitter, underbody,
+                  diffuser and rear wing.
+                </p>
+                <ul>
+                  <li>Front diffuser-style splitter and air-dam treatment.</li>
+                  <li>Floor skirts and wide-body surfaces for underbody sealing and wheel-wake control.</li>
+                  <li>High-chord NACA 6412 rear wing with gurney flap and lip spoiler.</li>
+                  <li>Defined aerodynamic boundary zones for controlled iteration.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">02 — CFD credibility</span>
+            <h2>CFD Methodology &amp; Validation</h2>
+            <p class="section-lead">
+              Before comparing aerodynamic iterations, the CFD setup was checked for mesh quality,
+              convergence behaviour and near-wall resolution so the deltas were defensible.
+            </p>
+
+            <div class="slideshow-container" id="credibilitySlideshow">
+              <div class="slide active">
+                <img src="LMGT3/lmgt3-geometry-zones.png" alt="LM-GT3 aerodynamic boundary zones"/>
+                <div class="slide-caption"><h3>01 — Regulation-informed geometry setup</h3><p>The vehicle was divided into splitter, underbody, diffuser and rear-wing zones to support controlled aerodynamic development.</p></div>
+              </div>
+              <div class="slide">
+                <img src="LMGT3/lmgt3-mesh-refinement.png" alt="CFD mesh refinement around the LM-GT3 vehicle"/>
+                <div class="slide-caption"><h3>02 — Mesh refinement strategy</h3><p>Local refinement was applied around the underbody, wheel wake, diffuser and rear wake to capture key flow structures.</p></div>
+              </div>
+              <div class="slide">
+                <img src="LMGT3/lmgt3-mesh-convergence.png" alt="Drag coefficient mesh convergence plot"/>
+                <div class="slide-caption"><h3>03 — Drag coefficient convergence</h3><p>The selected mesh stabilised around 14M cells and was checked against published DrivAer reference data.</p></div>
+              </div>
+              <div class="slide">
+                <img src="LMGT3/lmgt3-yplus-convergence.png" alt="Wall y plus convergence plot"/>
+                <div class="slide-caption"><h3>04 — Near-wall resolution check</h3><p>The wall-resolved setup targeted y+ &lt; 5 across major surfaces to support low-y+ turbulence modelling.</p></div>
+              </div>
+              <button class="slide-btn prev" aria-label="Previous slide">&#10094;</button>
+              <button class="slide-btn next" aria-label="Next slide">&#10095;</button>
+              <div class="slide-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">03 — Aerodynamic development</span>
+            <h2>Aerodynamic Development &amp; Flow Physics</h2>
+            <p class="section-lead">
+              The aerodynamic package was developed through controlled design iterations. The focus was not only
+              increasing downforce, but understanding how each device changed the flow field, load generation and
+              robustness.
+            </p>
+
+            <div class="evidence-card reverse">
+              <div class="evidence-media"><img src="LMGT3/lmgt3-final-contours-iteration6.png" alt="Final Iteration 6 pressure coefficient and wall shear stress contours"/></div>
+              <div class="evidence-text">
+                <span class="evidence-label">Flow-field interpretation</span>
+                <h3>Why the final package worked</h3>
+                <p>
+                  The final iteration combined a Ferrari 499P-inspired splitter, floor skirts, wide-body treatment,
+                  air dam, shark fin and high-chord rear wing. Pressure coefficient and wall shear stress plots were
+                  used to interpret the effect of these surfaces on suction generation, underbody sealing and wake control.
+                </p>
+                <ul>
+                  <li>Stronger front suction from the splitter and air-dam package.</li>
+                  <li>Improved underbody sealing through skirts and wide-body treatment.</li>
+                  <li>More coherent diffuser and rear-wing flow structures.</li>
+                  <li>Reduced sensitivity to yaw compared with weaker configurations.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="image-pair">
+              <figure><img src="LMGT3/lmgt3-baseline-contours.png" alt="Baseline LM-GT3 pressure coefficient and wall shear stress contours"/><figcaption>Baseline configuration: limited downforce generation, weak underbody suction and visible wake losses.</figcaption></figure>
+              <figure><img src="LMGT3/lmgt3-component-downforce.png" alt="Component downforce contribution across LM-GT3 aerodynamic iterations"/><figcaption>Component contribution: the final package was dominated by splitter and rear-wing load generation.</figcaption></figure>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">04 — Aero metrics</span>
+            <h2>Aero Performance Metrics &amp; Robustness</h2>
+            <p class="section-lead">
+              Each iteration was assessed using drag/downforce trade-off, lift-to-drag ratio and yaw robustness.
+              This avoided selecting a package based only on peak downforce.
+            </p>
+
+            <div class="chart-grid">
+              <figure><img src="LMGT3/lmgt3-cl-cd-performance.png" alt="CL versus CD aerodynamic performance comparison across LM-GT3 iterations"/><figcaption>Downforce versus drag trade-off across the six aerodynamic iterations.</figcaption></figure>
+              <figure><img src="LMGT3/lmgt3-ld-trend.png" alt="Lift to drag ratio trend across LM-GT3 aerodynamic iterations"/><figcaption>Iteration 6 produced the strongest predicted aerodynamic efficiency, with L/D = 2.24.</figcaption></figure>
+              <figure><img src="LMGT3/lmgt3-yaw-robustness.png" alt="Straight-line and yaw aerodynamic coefficient comparison across LM-GT3 iterations"/><figcaption>The final configuration retained 78% of its downforce under 5° yaw.</figcaption></figure>
+              <figure><img src="LMGT3/lmgt3-final-cad-iteration6.png" alt="Final LM-GT3 aerodynamic package layout"/><figcaption>Final package layout linking the performance metrics back to the surface design choices.</figcaption></figure>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">05 — Vehicle simulation</span>
+            <h2>Aero Mapping &amp; Vehicle Simulation</h2>
+            <p class="section-lead">
+              CFD force coefficients were converted into aero maps using MATLAB interpolation. This allowed the package
+              to be evaluated at vehicle level through speed trace and simulated lap-time analysis rather than isolated
+              CFD outputs.
+            </p>
+
+            <div class="slideshow-container" id="vehicleSimulationSlideshow">
+              <div class="slide active">
+                <img src="LMGT3/lmgt3-cla-aeromap.png" alt="RBF interpolated CLA aero map across front and rear ride height"/>
+                <div class="slide-caption"><h3>01 — Downforce aero map</h3><p>CLA values were interpolated across front and rear ride-height conditions to create a continuous downforce surface for simulator input.</p></div>
+              </div>
+              <div class="slide">
+                <img src="LMGT3/lmgt3-cda-aeromap.png" alt="RBF interpolated CDA aero map across front and rear ride height"/>
+                <div class="slide-caption"><h3>02 — Drag aero map</h3><p>CDA was mapped across the same operating space, allowing drag penalties and efficiency trade-offs to be considered alongside downforce.</p></div>
+              </div>
+              <div class="slide">
+                <img src="LMGT3/lmgt3-speed-distance.png" alt="Speed versus distance comparison across LM-GT3 aerodynamic iterations"/>
+                <div class="slide-caption"><h3>03 — Speed trace comparison</h3><p>The speed-distance trace shows where aerodynamic changes translated into vehicle-level gains around the Portimão lap.</p></div>
+              </div>
+              <div class="slide">
+                <img src="LMGT3/lmgt3-lap-time.png" alt="Lap time comparison across LM-GT3 aerodynamic iterations"/>
+                <div class="slide-caption"><h3>04 — Simulated lap-time impact</h3><p>Iteration 6 produced the fastest simulated lap, reducing lap time from 102.18s to 98.21s compared with the baseline.</p></div>
+              </div>
+              <button class="slide-btn prev" aria-label="Previous slide">&#10094;</button>
+              <button class="slide-btn next" aria-label="Next slide">&#10095;</button>
+              <div class="slide-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">06 — Results</span>
+            <h2>Headline Results</h2>
+            <div class="results-box">
+              <ul>
+                <li><strong>Predicted L/D = 2.24</strong> for the final aerodynamic package.</li>
+                <li><strong>+23.6% downforce improvement</strong> relative to mid-iteration comparison.</li>
+                <li><strong>-7.7% drag reduction</strong> relative to mid-iteration comparison.</li>
+                <li><strong>78% downforce retention at 5° yaw</strong>, indicating improved crosswind robustness.</li>
+                <li><strong>102.18s → 98.21s simulated Portimão lap time</strong>, a 3.97s simulated reduction.</li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">07 — Engineering reflection</span>
+            <h2>Limitations &amp; Next Steps</h2>
+            <p class="section-lead">
+              The project is strongest as a relative aerodynamic development study. The results are useful for comparing
+              design directions, but should not be presented as physically validated full-scale race-car performance.
+            </p>
+            <div class="reflection-grid">
+              <div class="reflection-card">
+                <h3>Limitations</h3>
+                <ul>
+                  <li>Scaled DrivAer-based geometry rather than a full production LMGT3 scan.</li>
+                  <li>Steady RANS used for straight-line studies, with URANS used for yaw assessment.</li>
+                  <li>No physical wind-tunnel or track validation of the final package.</li>
+                  <li>Lap-time results are simulated and dependent on model assumptions.</li>
+                </ul>
+              </div>
+              <div class="reflection-card">
+                <h3>Future work</h3>
+                <ul>
+                  <li>Wind-tunnel validation using pressure taps and force-balance data.</li>
+                  <li>Higher-fidelity transient CFD such as DES/LES for wake and diffuser behaviour.</li>
+                  <li>Coupled suspension and tyre model integration for dynamic ride-height sensitivity.</li>
+                  <li>Expanded aero maps across larger yaw, pitch and ride-height operating windows.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">Ownership</span>
+            <h2>What I Owned End-to-End</h2>
+            <ul>
+              <li>CAD surface iteration and aerodynamic packaging for like-for-like CFD comparison.</li>
+              <li>STAR-CCM+ setup, mesh strategy, solver execution and post-processing.</li>
+              <li>Mesh convergence, near-wall resolution checks and baseline validation logic.</li>
+              <li>MATLAB aero-map interpolation and simulator-ready data preparation.</li>
+              <li>ChassisSim lap-time comparison and interpretation of vehicle-level sensitivity.</li>
+            </ul>
+            <p><a class="back-link" href="../index.html#projects">← Back to projects</a></p>
+          </section>
+        </article>
+
+        <aside class="panel">
+          <div class="sidebar-card">
+            <h3>Project details</h3>
+            <div class="kv">
+              <div class="kv-item"><div class="k">Category</div><div class="v">Aerodynamics / CFD / Vehicle Simulation</div></div>
+              <div class="kv-item"><div class="k">Project type</div><div class="v">MSc dissertation case study</div></div>
+              <div class="kv-item"><div class="k">Focus</div><div class="v">Surface design, CFD validation, aero mapping and simulated lap-time impact</div></div>
+              <div class="kv-item"><div class="k">Tools</div><div class="v">CAD surfacing, STAR-CCM+, MATLAB, ChassisSim</div></div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Key methods</h3>
+            <ul>
+              <li>Regulation-informed aero packaging</li>
+              <li>Wall-resolved RANS CFD</li>
+              <li>Mesh convergence and y+ checks</li>
+              <li>URANS yaw robustness assessment</li>
+              <li>RBF aero-map interpolation</li>
+              <li>Lap-time simulation at Portimão</li>
+            </ul>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Key takeaways</h3>
+            <ul>
+              <li>Credibility-first baselines reduce the risk of fake gains.</li>
+              <li>Surface design quality affects CFD reliability.</li>
+              <li>Aero maps reveal sensitivities single-point CFD misses.</li>
+              <li>Lap-time simulation turns aero trade-offs into decisions.</li>
+            </ul>
+          </div>
+
+          <div class="sidebar-card">
+  <h3>Relevant capabilities</h3>
+  <ul>
+    <li>CAD surface design for CFD-ready geometry</li>
+    <li>External aerodynamic simulation setup</li>
+    <li>Mesh convergence and near-wall validation</li>
+    <li>Aero-map generation and interpolation</li>
+    <li>Vehicle-level performance interpretation</li>
+  </ul>
+</div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const slideshows = document.querySelectorAll(".slideshow-container");
+      slideshows.forEach((slideshow) => {
+        const slides = slideshow.querySelectorAll(".slide");
+        const dots = slideshow.querySelectorAll(".dot");
+        const prevBtn = slideshow.querySelector(".prev");
+        const nextBtn = slideshow.querySelector(".next");
+        let current = 0;
+        let interval;
+        function showSlide(index) {
+          slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
+          dots.forEach((dot, i) => dot.classList.toggle("active", i === index));
+          current = index;
+        }
+        function nextSlide() {
+          const next = current + 1 >= slides.length ? 0 : current + 1;
+          showSlide(next);
+        }
+        function prevSlide() {
+          const prev = current - 1 < 0 ? slides.length - 1 : current - 1;
+          showSlide(prev);
+        }
+        function startAutoSlide() { interval = setInterval(nextSlide, 4500); }
+        function resetAutoSlide() { clearInterval(interval); startAutoSlide(); }
+        if (nextBtn) nextBtn.addEventListener("click", () => { nextSlide(); resetAutoSlide(); });
+        if (prevBtn) prevBtn.addEventListener("click", () => { prevSlide(); resetAutoSlide(); });
+        dots.forEach((dot, index) => dot.addEventListener("click", () => { showSlide(index); resetAutoSlide(); }));
+        showSlide(0);
+        startAutoSlide();
+      });
+    })();
+  </script>
+</body>
+</html>

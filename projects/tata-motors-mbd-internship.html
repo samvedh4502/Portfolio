@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <meta
+    name="description"
+    content="Tata Motors multi-body dynamics internship case study by Samvedh Shetty — MSC ADAMS vehicle dynamics, K&C, steady-state handling, parking brake efficiency simulation and MATLAB/Excel post-processing."
+  />
+
+  <title>Tata Motors Multi-Body Dynamics Internship | Samvedh Shetty</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link href="../assets/styles.css" rel="stylesheet"/>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    .project-hero {
+      padding: 44px 0 32px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    .breadcrumb a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .project-intro {
+      max-width: 88ch;
+      opacity: 0.92;
+      font-size: clamp(1rem, 1.35vw, 1.1rem);
+      line-height: 1.65;
+      margin-bottom: 0;
+    }
+
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 10px;
+      margin: 20px 0 0;
+    }
+
+    .metric-card {
+      padding: 13px 14px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .metric-card strong {
+      display: block;
+      font-size: 1.12rem;
+      line-height: 1.15;
+      margin-bottom: 4px;
+    }
+
+    .metric-card span {
+      display: block;
+      font-size: 0.9rem;
+      opacity: 0.82;
+      line-height: 1.35;
+    }
+
+    .project-shell {
+      width: min(100% - 32px, 1180px);
+      margin-inline: auto;
+    }
+
+    .case-panel {
+      padding: clamp(20px, 3vw, 34px);
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .case-section {
+      padding: 0 !important;
+      margin: 30px 0;
+    }
+
+    .case-section:first-child {
+      margin-top: 0;
+    }
+
+    .case-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-kicker {
+      display: inline-block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.65;
+    }
+
+    .case-section h2 {
+      margin: 0 0 8px;
+    }
+
+    .case-section h3 {
+      margin: 0 0 8px;
+    }
+
+    .case-section p {
+      margin-top: 0;
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .section-lead {
+      opacity: 0.9;
+      max-width: 86ch;
+      line-height: 1.6;
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .hero-figure {
+      margin: 18px 0 0;
+    }
+
+    .hero-figure img {
+      width: 100%;
+      display: block;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: #07101a;
+    }
+
+    figcaption {
+      margin-top: 7px;
+      font-size: 0.86rem;
+      line-height: 1.35;
+      color: rgba(235, 241, 248, 0.82);
+    }
+
+    .scope-grid,
+    .workflow-grid,
+    .reflection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .scope-card,
+    .workflow-card,
+    .reflection-card {
+      padding: 15px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+
+    .scope-card ul,
+    .workflow-card ul,
+    .reflection-card ul {
+      margin: 8px 0 0;
+      padding-left: 19px;
+    }
+
+    .scope-card li,
+    .workflow-card li,
+    .reflection-card li {
+      margin-bottom: 5px;
+      line-height: 1.5;
+    }
+
+    .nda-banner {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.12);
+      margin-top: 16px;
+    }
+
+    .nda-banner strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(235,241,248,0.35);
+      color: inherit;
+    }
+
+    @media (max-width: 760px) {
+      .project-shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      .project-hero {
+        padding: 34px 0 24px;
+      }
+
+      .case-panel {
+        padding: 18px;
+      }
+
+      .case-section {
+        margin: 26px 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav>
+    <div class="container">
+      <a aria-label="Home" href="../index.html" style="text-decoration:none; color:inherit;">
+        <div class="logo">Samvedh Shetty</div>
+      </a>
+
+      <ul>
+        <li><a href="../index.html#about">About</a></li>
+        <li><a href="../index.html#education">Education</a></li>
+        <li><a href="../index.html#skills">Skills</a></li>
+        <li><a href="../index.html#experience">Experience</a></li>
+        <li><a href="../index.html#projects">Projects</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main">
+    <header class="project-hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="../index.html#experience">Experience</a>
+          <span>›</span>
+          <span>Tata Motors Multi-Body Dynamics Internship</span>
+        </div>
+
+        <h1>Tata Motors — Multi-Body Dynamics Internship</h1>
+
+        <p class="project-intro">
+          Industry internship focused on multi-body vehicle dynamics simulation for compact SUV programmes.
+          The work involved MSC ADAMS-based K&amp;C and steady-state handling studies, parking-brake efficiency
+          simulation support, and MATLAB/Excel post-processing to compare variants and convert simulation outputs
+          into engineering conclusions.
+        </p>
+
+        <div class="project-tags" style="margin-top: 18px;">
+          <span class="tag">MSC ADAMS</span>
+          <span class="tag">Vehicle Dynamics</span>
+          <span class="tag">K&amp;C</span>
+          <span class="tag">Handling</span>
+          <span class="tag">MATLAB</span>
+          <span class="tag">Excel</span>
+        </div>
+
+        <div class="metric-strip" aria-label="Experience summary">
+          <div class="metric-card">
+            <strong>Jul 2023 – Jan 2024</strong>
+            <span>internship duration</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>MSC ADAMS</strong>
+            <span>primary MBD simulation tool</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>K&amp;C</strong>
+            <span>suspension and vehicle behaviour studies</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>Handling</strong>
+            <span>steady-state response analysis</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>Brake simulation</strong>
+            <span>parking-brake efficiency support</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section style="padding-top: 0;">
+      <div class="project-shell">
+        <article class="case-panel">
+
+          <section class="case-section">
+            <span class="section-kicker">Role summary</span>
+            <h2>What this experience demonstrates</h2>
+
+            <p>
+              This internship demonstrates applied vehicle dynamics simulation in an automotive OEM environment.
+              The emphasis was on building and analysing repeatable simulation workflows, interpreting vehicle response,
+              and using post-processing to support engineering judgement rather than simply producing raw plots.
+            </p>
+
+            <figure class="hero-figure">
+              <img
+                src="Experience/tata-motors-mbd-thumbnail.png"
+                alt="Generic multi-body dynamics thumbnail representing Tata Motors vehicle dynamics simulation work"
+              />
+              <figcaption>
+                Generic NDA-safe visual representing the internship scope: vehicle dynamics, K&amp;C, handling response,
+                parking-brake simulation and post-processing.
+              </figcaption>
+            </figure>
+
+            <div class="nda-banner">
+              <strong>Confidentiality note</strong>
+              Detailed vehicle models, internal plots, exact programme data and proprietary simulation outputs are not shown.
+              The work is described at system and workflow level only.
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">01 — Technical scope</span>
+            <h2>Areas of Work</h2>
+
+            <div class="scope-grid">
+              <div class="scope-card">
+                <h3>K&amp;C simulation</h3>
+                <p>
+                  Supported vehicle dynamics studies involving kinematics and compliance behaviour for compact SUV models.
+                </p>
+                <ul>
+                  <li>Suspension response interpretation</li>
+                  <li>Variant comparison</li>
+                  <li>Handling-relevant parameter review</li>
+                </ul>
+              </div>
+
+              <div class="scope-card">
+                <h3>Steady-state handling</h3>
+                <p>
+                  Worked with ADAMS handling simulation outputs to assess vehicle response trends and compare behaviour
+                  across configurations.
+                </p>
+                <ul>
+                  <li>Yaw and lateral response trends</li>
+                  <li>Vehicle variant comparison</li>
+                  <li>Simulation-output interpretation</li>
+                </ul>
+              </div>
+
+              <div class="scope-card">
+                <h3>Parking-brake efficiency</h3>
+                <p>
+                  Supported parking-brake efficiency simulation by modelling brake-system behaviour and interpreting
+                  force-transfer response.
+                </p>
+                <ul>
+                  <li>Brake mechanism behaviour</li>
+                  <li>Force-transfer interpretation</li>
+                  <li>Efficiency-focused simulation support</li>
+                </ul>
+              </div>
+
+              <div class="scope-card">
+                <h3>Post-processing</h3>
+                <p>
+                  Used MATLAB and Excel workflows to organise simulation outputs, compare variants and communicate
+                  engineering conclusions clearly.
+                </p>
+                <ul>
+                  <li>MATLAB-based analysis</li>
+                  <li>Excel comparison dashboards</li>
+                  <li>Repeatable output review</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">02 — Workflow</span>
+            <h2>Simulation-to-Insight Workflow</h2>
+
+            <p class="section-lead">
+              The main value of the internship was learning how vehicle dynamics simulation fits into engineering
+              decision-making inside an OEM. The workflow connected simulation setup, repeatable execution,
+              post-processing and engineering interpretation.
+            </p>
+
+            <div class="workflow-grid">
+              <div class="workflow-card">
+                <h3>1. Model setup and execution</h3>
+                <p>
+                  Worked with MSC ADAMS models and simulation procedures for vehicle dynamics and brake-related studies.
+                </p>
+              </div>
+
+              <div class="workflow-card">
+                <h3>2. Response extraction</h3>
+                <p>
+                  Reviewed simulation outputs relevant to K&amp;C behaviour, handling response and parking-brake performance.
+                </p>
+              </div>
+
+              <div class="workflow-card">
+                <h3>3. Variant comparison</h3>
+                <p>
+                  Used MATLAB and Excel to compare outputs across vehicle configurations and identify behaviour changes.
+                </p>
+              </div>
+
+              <div class="workflow-card">
+                <h3>4. Engineering conclusion</h3>
+                <p>
+                  Converted simulation data into practical observations that could support system-level engineering review.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">03 — Engineering value</span>
+            <h2>What I Took Ownership Of</h2>
+
+            <div class="reflection-grid">
+              <div class="reflection-card">
+                <h3>Vehicle dynamics interpretation</h3>
+                <p>
+                  Developed a stronger understanding of how K&amp;C and handling simulations are used to evaluate vehicle
+                  response before physical testing.
+                </p>
+              </div>
+
+              <div class="reflection-card">
+                <h3>Brake-system simulation support</h3>
+                <p>
+                  Supported simulation work related to parking-brake efficiency, focusing on brake-system behaviour
+                  and force-transfer interpretation.
+                </p>
+              </div>
+
+              <div class="reflection-card">
+                <h3>Data processing discipline</h3>
+                <p>
+                  Built confidence in handling simulation outputs, organising comparisons and creating repeatable
+                  analysis workflows using MATLAB and Excel.
+                </p>
+              </div>
+
+              <div class="reflection-card">
+                <h3>OEM engineering exposure</h3>
+                <p>
+                  Gained experience working in a structured automotive engineering environment where simulation results
+                  need to be traceable, comparable and useful for design review.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">04 — Skills developed</span>
+            <h2>Technical Skills Strengthened</h2>
+
+            <div class="scope-grid">
+              <div class="scope-card">
+                <h3>MSC ADAMS</h3>
+                <p>
+                  Multi-body dynamics model execution, vehicle response review and simulation-output interpretation.
+                </p>
+              </div>
+
+              <div class="scope-card">
+                <h3>Vehicle dynamics</h3>
+                <p>
+                  K&amp;C behaviour, steady-state handling response, yaw/lateral behaviour and system-level interpretation.
+                </p>
+              </div>
+
+              <div class="scope-card">
+                <h3>MATLAB / Excel</h3>
+                <p>
+                  Post-processing, comparison workflows, data visualisation and structured review of simulation outputs.
+                </p>
+              </div>
+
+              <div class="scope-card">
+                <h3>Engineering communication</h3>
+                <p>
+                  Presenting simulation-driven observations clearly while respecting confidentiality and internal data control.
+                </p>
+              </div>
+            </div>
+
+            <p>
+              <a class="back-link" href="../index.html#experience">← Back to experience</a>
+            </p>
+          </section>
+
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

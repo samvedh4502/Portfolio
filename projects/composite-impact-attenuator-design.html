@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta
+    name="description"
+    content="Composite chassis design and impact modelling case study by Samvedh Shetty — laminate strategy, LS-DYNA crash simulation, energy absorption and chassis deformation comparison."
+  />
+  <title>Composite Chassis Design & Impact Modelling | Samvedh Shetty</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link href="../assets/styles.css" rel="stylesheet"/>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    .project-hero {
+      padding: 44px 0 32px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    .breadcrumb a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .project-intro {
+      max-width: 82ch;
+      opacity: 0.92;
+      font-size: clamp(1rem, 1.35vw, 1.1rem);
+      line-height: 1.65;
+      margin-bottom: 0;
+    }
+
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 10px;
+      margin: 20px 0 0;
+    }
+
+    .metric-card {
+      padding: 13px 14px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .metric-card strong {
+      display: block;
+      font-size: 1.18rem;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .metric-card span {
+      display: block;
+      font-size: 0.9rem;
+      opacity: 0.82;
+      line-height: 1.35;
+    }
+
+    .project-shell {
+      width: min(100% - 32px, 1180px);
+      margin-inline: auto;
+    }
+
+    .case-panel {
+      padding: clamp(20px, 3vw, 34px);
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .case-section {
+      padding: 0 !important;
+      margin: 30px 0;
+    }
+
+    .case-section:first-child {
+      margin-top: 0;
+    }
+
+    .case-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-kicker {
+      display: inline-block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.65;
+    }
+
+    .case-section h2 {
+      margin: 0 0 8px;
+    }
+
+    .case-section h3 {
+      margin: 0 0 8px;
+    }
+
+    .section-lead {
+      opacity: 0.9;
+      max-width: 80ch;
+      line-height: 1.6;
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .case-section p {
+      margin-top: 0;
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .case-section ul,
+    .case-section ol {
+      margin-top: 8px;
+      margin-bottom: 10px;
+    }
+
+    .case-section li {
+      margin-bottom: 4px;
+    }
+
+    .evidence-card {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+      gap: clamp(18px, 2.5vw, 28px);
+      align-items: center;
+      margin: 16px 0 24px;
+      padding: clamp(16px, 2.4vw, 22px);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+      min-width: 0;
+    }
+
+    .evidence-media img,
+    .figure-grid img,
+    .wide-figure img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .evidence-label {
+      display: inline-block;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.65;
+      margin-bottom: 4px;
+    }
+
+    .figure-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+      gap: clamp(16px, 2vw, 24px);
+      margin-top: 14px;
+    }
+
+    figure {
+      margin: 0;
+    }
+
+    figcaption {
+      margin-top: 7px;
+      font-size: 0.86rem;
+      line-height: 1.35;
+      color: rgba(235, 241, 248, 0.82);
+    }
+
+    .wide-figure {
+      margin-top: 16px;
+    }
+
+    .results-box,
+    .reflection-card {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .reflection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .capability-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .capability-card {
+      padding: 15px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+
+    .capability-card h3 {
+      margin-bottom: 6px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(235,241,248,0.35);
+      color: inherit;
+    }
+
+    @media (max-width: 760px) {
+      .project-shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      .project-hero {
+        padding: 34px 0 24px;
+      }
+
+      .case-panel {
+        padding: 18px;
+      }
+
+      .case-section {
+        margin: 26px 0;
+      }
+
+      .metric-card {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav>
+    <div class="container">
+      <a aria-label="Home" href="../index.html" style="text-decoration:none; color:inherit;">
+        <div class="logo">Samvedh Shetty</div>
+      </a>
+      <ul>
+        <li><a href="../index.html#about">About</a></li>
+        <li><a href="../index.html#education">Education</a></li>
+        <li><a href="../index.html#skills">Skills</a></li>
+        <li><a href="../index.html#projects">Projects</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main">
+    <header class="project-hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="../index.html#projects">Projects</a>
+          <span>›</span>
+          <span>Composite Chassis Design &amp; Impact Modelling</span>
+        </div>
+
+        <h1>Composite Chassis Design &amp; Impact Modelling</h1>
+
+        <p class="project-intro">
+          Composite chassis and crash-energy management case study combining laminate strategy,
+          impact attenuator concept comparison and LS-DYNA explicit impact simulation. The work focused on
+          balancing energy absorption, chassis deformation control and material/geometry selection under severe
+          frontal and side-impact loading.
+        </p>
+
+        <div class="project-tags" style="margin-top: 18px;">
+          <span class="tag">LS-DYNA</span>
+          <span class="tag">Femap</span>
+          <span class="tag">Composite Laminates</span>
+          <span class="tag">Crashworthiness</span>
+          <span class="tag">Energy Absorption</span>
+        </div>
+
+        <div class="metric-strip" aria-label="Headline project results">
+          <div class="metric-card">
+            <strong>1300 kg</strong>
+            <span>impact mass used in crash scenario</span>
+          </div>
+          <div class="metric-card">
+            <strong>13.86 m/s</strong>
+            <span>initial impact velocity</span>
+          </div>
+          <div class="metric-card">
+            <strong>5</strong>
+            <span>attenuator concepts compared</span>
+          </div>
+          <div class="metric-card">
+            <strong>81.9 kJ</strong>
+            <span>absorbed by selected Design 5 concept</span>
+          </div>
+          <div class="metric-card">
+            <strong>~14 mm</strong>
+            <span>final chassis displacement result</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section style="padding-top: 0;">
+      <div class="project-shell">
+        <article class="case-panel">
+
+          <section class="case-section">
+            <span class="section-kicker">Project summary</span>
+            <h2>What this project demonstrates</h2>
+            <p>
+              This project demonstrates a structural CAE workflow for composite crashworthiness: define the chassis
+              protection problem, model impact loading, compare material/geometry concepts, and make an engineering
+              recommendation based on energy absorption and residual chassis deformation rather than a single metric.
+            </p>
+
+            <h2>Engineering question</h2>
+            <p>
+              Which composite or hybrid attenuator concept gives the best compromise between crash-energy absorption
+              and chassis protection under severe impact loading?
+            </p>
+
+            <h2>Objectives</h2>
+            <ul>
+              <li><strong>Chassis protection:</strong> reduce frontal impact deformation relative to the bare chassis baseline.</li>
+              <li><strong>Material strategy:</strong> compare aluminium, honeycomb, foam and carbon-fibre-based concepts.</li>
+              <li><strong>Crash modelling:</strong> build an explicit LS-DYNA workflow with realistic contact, boundary conditions and impact energy.</li>
+              <li><strong>Decision logic:</strong> select the best concept using both absorbed energy and chassis displacement.</li>
+            </ul>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">01 — Chassis design context</span>
+            <h2>Composite Chassis &amp; Packaging Strategy</h2>
+            <p class="section-lead">
+              The design problem started from a composite chassis/enclosure architecture where impact structures,
+              internal packaging and laminate strategy had to be considered together.
+            </p>
+
+            <div class="evidence-card">
+              <div class="evidence-media">
+                <img
+                  src="Composite/composite-hero-assembly.png"
+                  alt="Composite chassis assembly and impact structure layout"
+                />
+              </div>
+
+              <div>
+                <span class="evidence-label">Chassis architecture</span>
+                <h3>Packaging-led composite structure</h3>
+                <p>
+                  The chassis design phase defined the structural envelope and packaging constraints before moving into
+                  crashworthiness assessment. This helped frame the attenuator as part of a larger composite system,
+                  rather than an isolated block added after the chassis was designed.
+                </p>
+                <ul>
+                  <li>Composite chassis/enclosure concept with impact protection zones.</li>
+                  <li>Internal packaging constraints considered alongside structural design.</li>
+                  <li>Design intent focused on controlled crush behaviour and chassis protection.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="figure-grid">
+              <figure>
+                <img
+                  src="Composite/composite-design-specification.png"
+                  alt="Composite chassis design specification and packaging constraints"
+                />
+                <figcaption>
+                  Design specification and packaging constraints used to define the chassis/enclosure design space.
+                </figcaption>
+              </figure>
+
+              <figure>
+                <img
+                  src="Composite/composite-laminate-strategy.png"
+                  alt="Composite laminate strategy and material selection"
+                />
+                <figcaption>
+                  Laminate and material strategy used to balance stiffness, mass and crash-energy management.
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">02 — Simulation setup</span>
+            <h2>LS-DYNA Impact Simulation Setup</h2>
+            <p class="section-lead">
+              The impact model used explicit transient dynamics to simulate high-strain-rate crash loading.
+              The setup included a 1300 kg impactor, initial velocity of 13.86 m/s, fixed chassis boundary
+              conditions and contact definitions between the impactor, attenuator and chassis.
+            </p>
+
+            <div class="wide-figure">
+              <figure>
+                <img
+                  src="Composite/composite-crash-setup.png"
+                  alt="LS-DYNA impact setup with impactor, chassis, frontal attenuator and side attenuator"
+                />
+                <figcaption>
+                  LS-DYNA impact setup showing impactor, chassis, frontal/side impact structures and crash envelope limits.
+                </figcaption>
+              </figure>
+            </div>
+
+            <div class="results-grid">
+              <div class="results-box">
+                <h3>Material models</h3>
+                <ul>
+                  <li>MAT 054 for enhanced composite damage modelling.</li>
+                  <li>MAT 058 for woven laminate representation where appropriate.</li>
+                  <li>MAT 126 for aluminium honeycomb crush behaviour.</li>
+                </ul>
+              </div>
+
+              <div class="results-box">
+                <h3>Modelling approach</h3>
+                <ul>
+                  <li>Layered shell elements for composite laminates.</li>
+                  <li>Solid elements for aluminium honeycomb core regions.</li>
+                  <li>Automatic crash contacts and tied connections for bonded interfaces.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">03 — Concept comparison</span>
+            <h2>Impact Attenuator Design Concepts</h2>
+            <p class="section-lead">
+              Five attenuator concepts were compared to understand how material selection and internal geometry affected
+              crush behaviour, energy absorption and load transfer into the chassis.
+            </p>
+
+            <div class="wide-figure">
+              <figure>
+                <img
+                  src="Composite/composite-five-attenuator-concepts.png"
+                  alt="Five impact attenuator concepts compared in LS-DYNA"
+                />
+                <figcaption>
+                  Five attenuator concepts compared: solid aluminium, honeycomb composite, Rohacell foam, interlocking carbon fibre and tube-block hybrid.
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">04 — Crashworthiness results</span>
+            <h2>Energy Absorption &amp; Chassis Deformation</h2>
+            <p class="section-lead">
+              The bare chassis baseline produced 64.9 mm frontal displacement, making frontal impact the critical case.
+              The final design decision therefore focused on reducing chassis deformation while still absorbing a high
+              proportion of the impact energy.
+            </p>
+
+            <div class="evidence-card">
+              <div class="evidence-media">
+                <img
+                  src="Composite/composite-final-design5-crash-fea.png"
+                  alt="Final Design 5 tube-block attenuator crash FEA result"
+                />
+              </div>
+
+              <div>
+                <span class="evidence-label">Selected concept</span>
+                <h3>Design 5: T800 tube-block hybrid</h3>
+                <p>
+                  Design 5 used a hybrid tube-block geometry with T800 UD material to promote controlled crushing.
+                  It absorbed 81.9 kJ while reducing chassis displacement to approximately 14 mm, making it the best
+                  compromise between energy absorption and chassis protection.
+                </p>
+                <ul>
+                  <li>More deformation-controlled than the higher-stiffness interlocking T1100 concept.</li>
+                  <li>Lower transmitted residual structural load than the maximum-energy design.</li>
+                  <li>Best overall compromise for chassis protection within the tested concepts.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="wide-figure">
+              <figure>
+                <img
+                  src="Composite/composite-performance-comparison.png"
+                  alt="Performance comparison of attenuator designs showing energy absorption and maximum displacement"
+                />
+                <figcaption>
+                  Performance comparison showing the trade-off between absorbed energy and chassis displacement across the five attenuator concepts.
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">05 — Engineering decision</span>
+            <h2>Design Recommendation</h2>
+
+            <div class="results-grid">
+              <div class="results-box">
+                <h3>Why not simply choose Design 4?</h3>
+                <p>
+                  Design 4 absorbed the highest energy at approximately 92 kJ, but its stiffer interlocking T1100
+                  structure transmitted more residual load to the chassis, resulting in approximately 27 mm displacement.
+                </p>
+              </div>
+
+              <div class="results-box">
+                <h3>Why Design 5 was selected</h3>
+                <p>
+                  Design 5 absorbed slightly less energy at 81.9 kJ, but reduced chassis displacement to approximately
+                  14 mm. That made it the stronger engineering compromise for chassis protection.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">06 — Results</span>
+            <h2>Headline Results</h2>
+
+            <div class="results-box">
+              <ul>
+                <li><strong>Baseline frontal displacement:</strong> 64.9 mm without an attenuator.</li>
+                <li><strong>Selected concept:</strong> Design 5, T800 tube-block hybrid attenuator.</li>
+                <li><strong>Energy absorbed:</strong> 81.9 kJ for Design 5.</li>
+                <li><strong>Chassis displacement:</strong> approximately 14 mm for Design 5.</li>
+                <li><strong>Engineering trade-off:</strong> Design 4 absorbed more energy, but Design 5 gave better deformation control.</li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">07 — Reflection</span>
+            <h2>Limitations &amp; Next Steps</h2>
+
+            <div class="reflection-grid">
+              <div class="reflection-card">
+                <h3>Limitations</h3>
+                <ul>
+                  <li>Simulation-led study without physical crash-test validation.</li>
+                  <li>Material behaviour depends heavily on assumed LS-DYNA material card inputs.</li>
+                  <li>Mesh refinement was balanced against coursework simulation time constraints.</li>
+                  <li>Design goal was approached, but the selected concept did not reach the original 5 mm target.</li>
+                </ul>
+              </div>
+
+              <div class="reflection-card">
+                <h3>Future work</h3>
+                <ul>
+                  <li>Perform finer mesh sensitivity studies around crush initiation zones.</li>
+                  <li>Validate material cards against coupon or component-level test data.</li>
+                  <li>Optimise lay-up sequence and ply orientation for progressive crushing.</li>
+                  <li>Extend the selected frontal design into a side-impact-specific geometry.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">Ownership</span>
+            <h2>What I Owned End-to-End</h2>
+
+            <div class="capability-grid">
+              <div class="capability-card">
+                <h3>Crash modelling</h3>
+                <p>Set up the LS-DYNA explicit impact workflow, including impactor definition, contacts and boundary conditions.</p>
+              </div>
+
+              <div class="capability-card">
+                <h3>Composite modelling</h3>
+                <p>Defined laminate/material modelling logic using composite and honeycomb material cards.</p>
+              </div>
+
+              <div class="capability-card">
+                <h3>Design comparison</h3>
+                <p>Compared five attenuator concepts using energy absorption and chassis displacement metrics.</p>
+              </div>
+
+              <div class="capability-card">
+                <h3>Engineering decision</h3>
+                <p>Selected the best concept based on the trade-off between absorbed energy and chassis protection.</p>
+              </div>
+            </div>
+
+            <p>
+              <a class="back-link" href="../index.html#projects">← Back to projects</a>
+            </p>
+          </section>
+
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

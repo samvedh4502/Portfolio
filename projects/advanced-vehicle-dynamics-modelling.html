@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <meta
+    name="description"
+    content="Advanced vehicle dynamics case study by Samvedh Shetty — ADAMS bicycle model, twin-track handling analysis, weight transfer, suspension modelling and ride optimisation."
+  />
+
+  <title>Advanced Vehicle Dynamics: Handling & Suspension Modelling | Samvedh Shetty</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link href="../assets/styles.css" rel="stylesheet"/>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    .project-hero {
+      padding: 44px 0 32px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    .breadcrumb a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .project-intro {
+      max-width: 86ch;
+      opacity: 0.92;
+      font-size: clamp(1rem, 1.35vw, 1.1rem);
+      line-height: 1.65;
+      margin-bottom: 0;
+    }
+
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 10px;
+      margin: 20px 0 0;
+    }
+
+    .metric-card {
+      padding: 13px 14px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .metric-card strong {
+      display: block;
+      font-size: 1.15rem;
+      line-height: 1.15;
+      margin-bottom: 4px;
+    }
+
+    .metric-card span {
+      display: block;
+      font-size: 0.9rem;
+      opacity: 0.82;
+      line-height: 1.35;
+    }
+
+    .project-shell {
+      width: min(100% - 32px, 1180px);
+      margin-inline: auto;
+    }
+
+    .case-panel {
+      padding: clamp(20px, 3vw, 34px);
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .case-section {
+      padding: 0 !important;
+      margin: 30px 0;
+    }
+
+    .case-section:first-child {
+      margin-top: 0;
+    }
+
+    .case-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-kicker {
+      display: inline-block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.65;
+    }
+
+    .case-section h2 {
+      margin: 0 0 8px;
+    }
+
+    .case-section h3 {
+      margin: 0 0 8px;
+    }
+
+    .section-lead {
+      opacity: 0.9;
+      max-width: 84ch;
+      line-height: 1.6;
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .case-section p {
+      margin-top: 0;
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .case-section ul {
+      margin-top: 8px;
+      margin-bottom: 10px;
+    }
+
+    .case-section li {
+      margin-bottom: 4px;
+    }
+
+    .figure-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+      gap: clamp(16px, 2vw, 24px);
+      margin-top: 14px;
+    }
+
+    figure {
+      margin: 0;
+    }
+
+    .figure-grid img,
+    .slide img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    figcaption {
+      margin-top: 7px;
+      font-size: 0.86rem;
+      line-height: 1.35;
+      color: rgba(235, 241, 248, 0.82);
+    }
+
+    .equation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .equation-card {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+
+    .equation-card h3 {
+      margin: 0 0 8px;
+    }
+
+    .equation-card p {
+      margin-bottom: 8px;
+      opacity: 0.9;
+    }
+
+    .equation {
+      overflow-x: auto;
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      font-size: 0.9rem;
+    }
+
+    .equation mjx-container {
+      overflow-x: auto;
+      overflow-y: hidden;
+      max-width: 100%;
+    }
+
+    .slideshow-container {
+      position: relative;
+      margin: 18px 0 28px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    }
+
+    .slide {
+      display: none;
+      padding: clamp(14px, 2vw, 22px);
+      animation: fadeSlide 0.45s ease;
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    .slide-content {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+      gap: clamp(18px, 2.5vw, 28px);
+      align-items: center;
+    }
+
+    .slide-text {
+      min-width: 0;
+    }
+
+    .slide-text h3 {
+      margin-bottom: 8px;
+    }
+
+    .slide-text p {
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    .slide-label {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.65;
+    }
+
+    .slide-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 0 0 16px;
+    }
+
+    .slide-btn {
+      background: rgba(255,255,255,0.09);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.18);
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .slide-btn:hover {
+      background: rgba(255,255,255,0.16);
+    }
+
+    .slide-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      cursor: pointer;
+    }
+
+    .dot.active {
+      background: white;
+    }
+
+    .results-grid,
+    .reflection-grid,
+    .capability-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .results-box,
+    .reflection-card,
+    .capability-card {
+      padding: 15px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(235,241,248,0.35);
+      color: inherit;
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 860px) {
+      .slide-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .project-shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      .project-hero {
+        padding: 34px 0 24px;
+      }
+
+      .case-panel {
+        padding: 18px;
+      }
+
+      .case-section {
+        margin: 26px 0;
+      }
+
+      .metric-card {
+        padding: 12px;
+      }
+
+      .slide {
+        padding: 14px;
+      }
+
+      .equation-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav>
+    <div class="container">
+      <a aria-label="Home" href="../index.html" style="text-decoration:none; color:inherit;">
+        <div class="logo">Samvedh Shetty</div>
+      </a>
+
+      <ul>
+        <li><a href="../index.html#about">About</a></li>
+        <li><a href="../index.html#education">Education</a></li>
+        <li><a href="../index.html#skills">Skills</a></li>
+        <li><a href="../index.html#projects">Projects</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main">
+    <header class="project-hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="../index.html#projects">Projects</a>
+          <span>›</span>
+          <span>Advanced Vehicle Dynamics</span>
+        </div>
+
+        <h1>Advanced Vehicle Dynamics: Handling &amp; Suspension Modelling</h1>
+
+        <p class="project-intro">
+          ADAMS-based vehicle dynamics study covering linear bicycle modelling, twin-track handling analysis,
+          lateral weight transfer, yaw-rate response and suspension ride optimisation. The project connects
+          first-principles vehicle dynamics equations with simulation outputs to assess handling balance, tyre loading,
+          ride response and pitch behaviour.
+        </p>
+
+        <div class="project-tags" style="margin-top: 18px;">
+          <span class="tag">MSC ADAMS</span>
+          <span class="tag">Vehicle Dynamics</span>
+          <span class="tag">Suspension</span>
+          <span class="tag">Handling</span>
+          <span class="tag">Ride Optimisation</span>
+        </div>
+
+        <div class="metric-strip" aria-label="Headline project results">
+          <div class="metric-card">
+            <strong>Bicycle Model</strong>
+            <span>understeer, neutral steer and oversteer response</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>Twin-Track</strong>
+            <span>individual wheel loading and lateral weight transfer</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>6.3498 → 4.4694</strong>
+            <span>damper coefficient, Ns/mm</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>100 → 25</strong>
+            <span>spring stiffness, N/mm</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>4DOF</strong>
+            <span>pitch response under asymmetric road input</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section style="padding-top: 0;">
+      <div class="project-shell">
+        <article class="case-panel">
+
+          <section class="case-section">
+            <span class="section-kicker">Project summary</span>
+            <h2>What this project demonstrates</h2>
+
+            <p>
+              This project demonstrates the progression from simplified handling models to more detailed vehicle dynamics
+              representations. A linear bicycle model was used to understand fundamental yaw and lateral-force response,
+              while a twin-track model was used to capture individual wheel loading and weight transfer. Suspension
+              modelling then progressed from SDOF and TDOF systems to a 4DOF pitch model.
+            </p>
+
+            <h2>Engineering question</h2>
+
+            <p>
+              How can simplified and intermediate-fidelity ADAMS models be used to evaluate vehicle handling balance,
+              tyre loading, ride response and suspension parameter sensitivity?
+            </p>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">Model basis</span>
+            <h2>Core Equations Used in the Vehicle Dynamics Models</h2>
+
+            <p class="section-lead">
+              The ADAMS models were supported by first-principles vehicle dynamics equations covering tyre slip,
+              lateral force generation, aerodynamic drag, yaw response, weight transfer and suspension motion.
+              These equations define the physical basis behind the simulation outputs without turning the page into
+              a full derivation.
+            </p>
+
+            <div class="equation-grid">
+
+              <div class="equation-card">
+                <h3>Slip angle estimation</h3>
+                <p>Slip angle was used as the fundamental tyre-state variable for lateral force generation.</p>
+                <div class="equation">
+                  \[
+                    \alpha =
+                    \tan^{-1}\left(\frac{V_y}{V_x}\right)
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Linear lateral force</h3>
+                <p>For small slip angles, the tyre was approximated using a linear cornering stiffness model.</p>
+                <div class="equation">
+                  \[
+                    F_y =
+                    C_\alpha \alpha
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Nonlinear tyre force form</h3>
+                <p>A Magic Formula-style expression was identified as the next step for nonlinear tyre behaviour.</p>
+                <div class="equation">
+                  \[
+                    F_y =
+                    D \sin \left[
+                    C \tan^{-1}
+                    \left(
+                    B\alpha - E(B\alpha - \tan^{-1}(B\alpha))
+                    \right)
+                    \right]
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Aerodynamic drag force</h3>
+                <p>Drag was included as a longitudinal resistance term affecting vehicle speed and handling response.</p>
+                <div class="equation">
+                  \[
+                    F_{drag} =
+                    \frac{1}{2}\rho C_d A V_x^2
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Driving force approximation</h3>
+                <p>A simplified drive-force relationship was used to overcome longitudinal resistance.</p>
+                <div class="equation">
+                  \[
+                    F_{driving} =
+                    0.25 \left(V_{input}^{2}\right)
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Low-speed yaw-rate approximation</h3>
+                <p>At low speed, yaw response was estimated from forward speed, steering input and wheelbase.</p>
+                <div class="equation">
+                  \[
+                    \dot{\psi} =
+                    \frac{V_x \delta}{L}
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Static axle normal loads</h3>
+                <p>Static load distribution was calculated from vehicle mass, wheelbase and CG position.</p>
+                <div class="equation">
+                  \[
+                    F_{z,front} =
+                    \frac{mgb}{L}
+                  \]
+                  \[
+                    F_{z,rear} =
+                    \frac{mga}{L}
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Longitudinal weight transfer</h3>
+                <p>Longitudinal acceleration transfers load between front and rear axles.</p>
+                <div class="equation">
+                  \[
+                    \Delta F_{z,long} =
+                    \frac{m a_x h_{cg}}{L}
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Lateral weight transfer</h3>
+                <p>Cornering acceleration transfers load between inside and outside wheels.</p>
+                <div class="equation">
+                  \[
+                    \Delta F_{z,lat} =
+                    \frac{m a_y h_{cg}}{T}
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Individual wheel loads</h3>
+                <p>For the twin-track model, axle loads were resolved into individual wheel normal forces.</p>
+                <div class="equation">
+                  \[
+                    F_{z,FL} =
+                    F_{z,front} + F_{z,front,lat} - F_{z,long}
+                  \]
+                  \[
+                    F_{z,FR} =
+                    F_{z,front} - F_{z,front,lat} - F_{z,long}
+                  \]
+                  \[
+                    F_{z,RL} =
+                    F_{z,rear} + F_{z,rear,lat} + F_{z,long}
+                  \]
+                  \[
+                    F_{z,RR} =
+                    F_{z,rear} - F_{z,rear,lat} + F_{z,long}
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>SDOF suspension response</h3>
+                <p>The single-degree-of-freedom suspension model was treated as a mass-spring-damper system.</p>
+                <div class="equation">
+                  \[
+                    m\ddot{y} + c\dot{y} + ky =
+                    F_{ext}
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Natural frequency</h3>
+                <p>Natural frequency defines the system’s tendency to oscillate without damping.</p>
+                <div class="equation">
+                  \[
+                    \omega_n =
+                    \sqrt{\frac{k}{m}}
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Damping ratio</h3>
+                <p>Damping ratio defines whether the suspension response is underdamped, critically damped or overdamped.</p>
+                <div class="equation">
+                  \[
+                    \zeta =
+                    \frac{c}{2\sqrt{km}}
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>TDOF sprung-mass equation</h3>
+                <p>The TDOF model introduced sprung and unsprung mass interaction through the suspension spring and damper.</p>
+                <div class="equation">
+                  \[
+                    m_s\ddot{y}_s(t)
+                    + c_s\left(\dot{y}_s(t)-\dot{y}_u(t)\right)
+                    + k_s\left(y_s(t)-y_u(t)\right)
+                    = 0
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>TDOF unsprung-mass equation</h3>
+                <p>Road excitation was applied through the unsprung mass side of the suspension model.</p>
+                <div class="equation">
+                  \[
+                    m_u\ddot{y}_u(t)
+                    + c_u\dot{y}_u(t)
+                    + k_u y_u(t)
+                    =
+                    F_{ext}(t)
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Relative displacement</h3>
+                <p>Relative motion between sprung and unsprung masses drives spring and damper force.</p>
+                <div class="equation">
+                  \[
+                    \Delta y(t) =
+                    y_s(t) - y_u(t)
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Spring force</h3>
+                <p>The spring force is proportional to relative suspension displacement.</p>
+                <div class="equation">
+                  \[
+                    F_s =
+                    k_s \Delta y(t)
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Damping force</h3>
+                <p>The damping force is proportional to relative velocity across the suspension.</p>
+                <div class="equation">
+                  \[
+                    F_d =
+                    c_s\left(\dot{y}_s(t)-\dot{y}_u(t)\right)
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>4DOF body vertical motion</h3>
+                <p>The 4DOF model extended the ride model to include front and rear axle excitation effects.</p>
+                <div class="equation">
+                  \[
+                    m_s\ddot{X}_s
+                    + c_{sf}(\dot{X}_{sf}-\dot{X}_{uf})
+                    + k_{sf}(X_{sf}-X_{uf})
+                    + c_{sr}(\dot{X}_{sr}-\dot{X}_{ur})
+                    - f_{sf} - f_{sr}
+                    = 0
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>4DOF pitch moment</h3>
+                <p>Pitch response was driven by unequal front and rear suspension forces acting through their moment arms.</p>
+                <div class="equation">
+                  \[
+                    I_s\ddot{\theta}_s
+                    + L_f
+                    \left[
+                    c_{sf}(\dot{X}_{sf}-\dot{X}_{uf})
+                    + k_{sf}(X_{sf}-X_{uf})
+                    - f_{sf}
+                    \right]
+                    - L_r
+                    \left[
+                    c_{sr}(\dot{X}_{sr}-\dot{X}_{ur})
+                    - f_{sr}
+                    \right]
+                    = 0
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Front unsprung vertical motion</h3>
+                <p>The front unsprung mass equation captures wheel-side vertical response under road excitation.</p>
+                <div class="equation">
+                  \[
+                    m_{uf}\ddot{X}_{uf}
+                    - c_{sf}(\dot{X}_{sf}-\dot{X}_{uf})
+                    - k_{sf}(X_{sf}-X_{uf})
+                    + k_{uf}(X_{uf}-X_{sf})
+                    + f_{sf}
+                    = 0
+                  \]
+                </div>
+              </div>
+
+              <div class="equation-card">
+                <h3>Rear unsprung vertical motion</h3>
+                <p>The rear unsprung mass equation captures rear wheel vertical response and its contribution to pitch.</p>
+                <div class="equation">
+                  \[
+                    m_{ur}\ddot{X}_{ur}
+                    - c_{sr}(\dot{X}_{sr}-\dot{X}_{ur})
+                    - k_{sr}(X_{sr}-X_{ur})
+                    + k_{ur}(X_{ur}-X_{sr})
+                    + f_{sr}
+                    = 0
+                  \]
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">01 — Model setup</span>
+            <h2>Bicycle Model Foundation</h2>
+
+            <p class="section-lead">
+              The bicycle model simplified the vehicle into front and rear tyre representations to study lateral and yaw
+              behaviour. This made it possible to isolate understeer, neutral steer and oversteer response before moving
+              to a higher-fidelity twin-track model.
+            </p>
+
+            <div class="figure-grid">
+              <figure>
+                <img
+                  src="Vehicle Dynamics/vd-bicycle-model-setup.png"
+                  alt="Bicycle model setup and constraints in MSC ADAMS"
+                />
+                <figcaption>
+                  ADAMS bicycle model setup showing the simplified tyre, body and constraint structure used for handling analysis.
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">02 — Handling analysis</span>
+            <h2>Bicycle and Twin-Track Handling Response</h2>
+
+            <p class="section-lead">
+              The handling analysis compared yaw-rate and lateral-force behaviour across understeer, neutral steer and
+              oversteer cases. The twin-track model added individual wheel loads, allowing lateral weight transfer and
+              asymmetric tyre loading to be represented more realistically than the bicycle model.
+            </p>
+
+            <div class="slideshow-container" id="handlingSlideshow">
+
+              <div class="slide active">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Vehicle Dynamics/vd-yaw-rate-handling-comparison.png"
+                      alt="Yaw-rate comparison for understeer, neutral steer and oversteer"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Handling slide 01</span>
+                    <h3>Yaw-rate response across handling states</h3>
+
+                    <p>
+                      The yaw-rate comparison separates the three handling behaviours. Understeer produces a weaker
+                      rotational response and reduced turning authority, neutral steer gives a balanced response, while
+                      oversteer shows a sharper yaw response and higher sensitivity to steering input.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Vehicle Dynamics/vd-twin-track-model-adams.png"
+                      alt="Twin-track vehicle model in ADAMS"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Handling slide 02</span>
+                    <h3>Twin-track model development</h3>
+
+                    <p>
+                      The twin-track model extends the bicycle model by representing all four tyres individually. This allows
+                      the simulation to capture left-right load transfer, axle interaction and asymmetric tyre force generation,
+                      which are not visible in a single-track representation.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Vehicle Dynamics/vd-weight-transfer-oversteer.png"
+                      alt="Weight transfer during oversteer in the twin-track model"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Handling slide 03</span>
+                    <h3>Cornering weight transfer</h3>
+
+                    <p>
+                      During acceleration and cornering, vertical load transfers from front to rear and from the inside tyres
+                      to the outside tyres. In the oversteer case, the outer rear tyre carries the highest load while the inner
+                      front becomes the least loaded, directly influencing lateral force capacity and stability.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Vehicle Dynamics/vd-bicycle-vs-twin-track-comparison.png"
+                      alt="Bicycle model versus twin-track model comparison"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Handling slide 04</span>
+                    <h3>Bicycle versus twin-track comparison</h3>
+
+                    <p>
+                      The bicycle and twin-track models follow similar overall trends, but the twin-track model gives a more
+                      realistic response because it includes individual wheel loading and axle interaction. This is especially
+                      important when assessing oversteer and lateral force distribution.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide-controls">
+                <button class="slide-btn prev" aria-label="Previous handling slide">&#10094;</button>
+
+                <div class="slide-dots">
+                  <span class="dot active"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+
+                <button class="slide-btn next" aria-label="Next handling slide">&#10095;</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">03 — Suspension optimisation</span>
+            <h2>Ride Response, Damper Tuning &amp; Pitch Behaviour</h2>
+
+            <p class="section-lead">
+              The suspension section progressed from SDOF theory to a TDOF sprung/unsprung mass model and then to a
+              4DOF pitch representation. The TDOF model was optimised using RMS contact patch force variation, linking
+              ride tuning to tyre-road contact consistency.
+            </p>
+
+            <div class="slideshow-container" id="suspensionSlideshow">
+
+              <div class="slide active">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Vehicle Dynamics/vd-tdof-spring-damper-optimisation.png"
+                      alt="TDOF spring and damper optimisation using RMS contact patch force"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Suspension slide 01</span>
+                    <h3>TDOF spring and damper optimisation</h3>
+
+                    <p>
+                      The TDOF suspension model was optimised using RMS contact patch force variation as the objective.
+                      The selected setup reduced the damper coefficient from 6.3498 Ns/mm to 4.4694 Ns/mm and spring
+                      stiffness from 100 N/mm to 25 N/mm, reducing oscillatory response and improving tyre contact behaviour.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Vehicle Dynamics/vd-damper-spline-bode-gain.png"
+                      alt="Damper spline and Bode gain comparison for suspension models"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Suspension slide 02</span>
+                    <h3>Damper spline and frequency response</h3>
+
+                    <p>
+                      The damper spline and Bode gain comparison show how damping characteristics affect vibration
+                      amplification across frequency. The optimised response reduces resonance peaks and provides a more
+                      controlled gain profile, improving ride comfort and contact patch stability.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Vehicle Dynamics/vd-four-dof-pitch-response.png"
+                      alt="4DOF pitch model and pitch response under asymmetric road input"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Suspension slide 03</span>
+                    <h3>4DOF pitch response</h3>
+
+                    <p>
+                      The 4DOF model introduced body pitch by applying asymmetric road inputs to the front and rear axles.
+                      This demonstrates how delayed axle excitation can create pitch motion, making the model more suitable
+                      for evaluating ride behaviour beyond simple vertical bounce.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide-controls">
+                <button class="slide-btn prev" aria-label="Previous suspension slide">&#10094;</button>
+
+                <div class="slide-dots">
+                  <span class="dot active"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+
+                <button class="slide-btn next" aria-label="Next suspension slide">&#10095;</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">04 — Results</span>
+            <h2>Engineering Outcomes</h2>
+
+            <div class="results-grid">
+              <div class="results-box">
+                <h3>Handling behaviour</h3>
+
+                <p>
+                  The bicycle model gave a clean first-order understanding of understeer, neutral steer and oversteer.
+                  The twin-track model improved realism by resolving load transfer and individual wheel forces.
+                </p>
+              </div>
+
+              <div class="results-box">
+                <h3>Weight transfer</h3>
+
+                <p>
+                  The twin-track model showed the redistribution of normal load during acceleration and cornering, with the
+                  outer wheels becoming more heavily loaded and the inner front becoming least loaded during the oversteer case.
+                </p>
+              </div>
+
+              <div class="results-box">
+                <h3>Suspension optimisation</h3>
+
+                <p>
+                  The TDOF optimisation reduced RMS contact patch force variation by selecting lower spring stiffness and
+                  revised damping, improving vibration control and ride behaviour.
+                </p>
+              </div>
+
+              <div class="results-box">
+                <h3>Pitch modelling</h3>
+
+                <p>
+                  The 4DOF model introduced pitch response under asymmetric road input, extending the analysis from simple
+                  ride displacement to front-rear vehicle body motion.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">05 — Reflection</span>
+            <h2>Limitations &amp; Next Steps</h2>
+
+            <div class="reflection-grid">
+              <div class="reflection-card">
+                <h3>Limitations</h3>
+
+                <ul>
+                  <li>Tyre force behaviour was simplified and did not fully use a nonlinear tyre model.</li>
+                  <li>The bicycle model is useful for trends but cannot capture individual wheel load transfer.</li>
+                  <li>The 4DOF model focused on pitch rather than a complete full-vehicle ride model.</li>
+                  <li>Results are simulation-based and not validated against physical rig or track data.</li>
+                </ul>
+              </div>
+
+              <div class="reflection-card">
+                <h3>Future work</h3>
+
+                <ul>
+                  <li>Introduce nonlinear tyre models such as Pacejka / Magic Formula.</li>
+                  <li>Add Ackermann steering geometry and more realistic steering kinematics.</li>
+                  <li>Extend the 4DOF model into a full vehicle ride and handling model.</li>
+                  <li>Explore semi-active damping and active suspension control strategies.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">Contribution focus</span>
+            <h2>What I Built and Analysed</h2>
+
+            <div class="capability-grid">
+              <div class="capability-card">
+                <h3>ADAMS modelling</h3>
+
+                <p>
+                  Built simplified bicycle, twin-track and suspension models using ADAMS constraints, joints and road inputs.
+                </p>
+              </div>
+
+              <div class="capability-card">
+                <h3>Vehicle handling interpretation</h3>
+
+                <p>
+                  Interpreted yaw-rate, lateral-force and weight-transfer behaviour across understeer, neutral steer and oversteer cases.
+                </p>
+              </div>
+
+              <div class="capability-card">
+                <h3>Suspension optimisation</h3>
+
+                <p>
+                  Used RMS contact patch force variation to select improved spring and damper values for the TDOF suspension model.
+                </p>
+              </div>
+
+              <div class="capability-card">
+                <h3>Ride and pitch analysis</h3>
+
+                <p>
+                  Assessed vertical response, damper frequency response and pitch development under asymmetric road excitation.
+                </p>
+              </div>
+            </div>
+
+            <p>
+              <a class="back-link" href="../index.html#projects">← Back to projects</a>
+            </p>
+          </section>
+
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const slideshows = document.querySelectorAll(".slideshow-container");
+
+      slideshows.forEach((slideshow) => {
+        const slides = slideshow.querySelectorAll(".slide");
+        const dots = slideshow.querySelectorAll(".dot");
+        const prevBtn = slideshow.querySelector(".prev");
+        const nextBtn = slideshow.querySelector(".next");
+
+        let current = 0;
+
+        function showSlide(index) {
+          slides.forEach((slide, i) => {
+            slide.classList.toggle("active", i === index);
+          });
+
+          dots.forEach((dot, i) => {
+            dot.classList.toggle("active", i === index);
+          });
+
+          current = index;
+        }
+
+        function nextSlide() {
+          const next = current + 1 >= slides.length ? 0 : current + 1;
+          showSlide(next);
+        }
+
+        function prevSlide() {
+          const prev = current - 1 < 0 ? slides.length - 1 : current - 1;
+          showSlide(prev);
+        }
+
+        if (nextBtn) {
+          nextBtn.addEventListener("click", nextSlide);
+        }
+
+        if (prevBtn) {
+          prevBtn.addEventListener("click", prevSlide);
+        }
+
+        dots.forEach((dot, index) => {
+          dot.addEventListener("click", () => showSlide(index));
+        });
+
+        showSlide(0);
+      });
+    })();
+  </script>
+</body>
+</html>
