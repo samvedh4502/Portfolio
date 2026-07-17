@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <meta
+    name="description"
+    content="NREL S826 aerofoil CFD validation and wind-tunnel correlation case study by Samvedh Shetty — STAR-CCM+ CFD, mesh convergence, low-y+ wall treatment, wind-tunnel testing and CFD/experimental correlation."
+  />
+
+  <title>NREL S826 Aerofoil CFD Validation & Wind-Tunnel Correlation | Samvedh Shetty</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link href="../assets/styles.css" rel="stylesheet"/>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    .project-hero {
+      padding: 44px 0 32px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    .breadcrumb a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .project-intro {
+      max-width: 88ch;
+      opacity: 0.92;
+      font-size: clamp(1rem, 1.35vw, 1.1rem);
+      line-height: 1.65;
+      margin-bottom: 0;
+    }
+
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 10px;
+      margin: 20px 0 0;
+    }
+
+    .metric-card {
+      padding: 13px 14px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .metric-card strong {
+      display: block;
+      font-size: 1.15rem;
+      line-height: 1.15;
+      margin-bottom: 4px;
+    }
+
+    .metric-card span {
+      display: block;
+      font-size: 0.9rem;
+      opacity: 0.82;
+      line-height: 1.35;
+    }
+
+    .project-shell {
+      width: min(100% - 32px, 1180px);
+      margin-inline: auto;
+    }
+
+    .case-panel {
+      padding: clamp(20px, 3vw, 34px);
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .case-section {
+      padding: 0 !important;
+      margin: 30px 0;
+    }
+
+    .case-section:first-child {
+      margin-top: 0;
+    }
+
+    .case-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-kicker {
+      display: inline-block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.65;
+    }
+
+    .case-section h2 {
+      margin: 0 0 8px;
+    }
+
+    .case-section h3 {
+      margin: 0 0 8px;
+    }
+
+    .section-lead {
+      opacity: 0.9;
+      max-width: 86ch;
+      line-height: 1.6;
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .case-section p {
+      margin-top: 0;
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .case-section ul {
+      margin-top: 8px;
+      margin-bottom: 10px;
+    }
+
+    .case-section li {
+      margin-bottom: 4px;
+    }
+
+    .figure-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+      gap: clamp(16px, 2vw, 24px);
+      margin-top: 14px;
+    }
+
+    figure {
+      margin: 0;
+    }
+
+    .figure-grid img,
+    .slide img,
+    .hero-figure img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .hero-figure {
+      margin-top: 16px;
+    }
+
+    .hero-figure img {
+      padding: 0;
+      object-fit: cover;
+      background: #111;
+    }
+
+    figcaption {
+      margin-top: 7px;
+      font-size: 0.86rem;
+      line-height: 1.35;
+      color: rgba(235, 241, 248, 0.82);
+    }
+
+    .slideshow-container {
+      position: relative;
+      margin: 18px 0 28px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    }
+
+    .slide {
+      display: none;
+      padding: clamp(14px, 2vw, 22px);
+      animation: fadeSlide 0.45s ease;
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    .slide-content {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+      gap: clamp(18px, 2.5vw, 28px);
+      align-items: center;
+    }
+
+    .slide-text {
+      min-width: 0;
+    }
+
+    .slide-text h3 {
+      margin-bottom: 8px;
+    }
+
+    .slide-text p {
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    .slide-label {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.65;
+    }
+
+    .slide-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 0 0 16px;
+    }
+
+    .slide-btn {
+      background: rgba(255,255,255,0.09);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.18);
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .slide-btn:hover {
+      background: rgba(255,255,255,0.16);
+    }
+
+    .slide-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      cursor: pointer;
+    }
+
+    .dot.active {
+      background: white;
+    }
+
+    .results-grid,
+    .reflection-grid,
+    .capability-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .results-box,
+    .reflection-card,
+    .capability-card {
+      padding: 15px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(235,241,248,0.35);
+      color: inherit;
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 860px) {
+      .slide-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .project-shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      .project-hero {
+        padding: 34px 0 24px;
+      }
+
+      .case-panel {
+        padding: 18px;
+      }
+
+      .case-section {
+        margin: 26px 0;
+      }
+
+      .metric-card {
+        padding: 12px;
+      }
+
+      .slide {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav>
+    <div class="container">
+      <a aria-label="Home" href="../index.html" style="text-decoration:none; color:inherit;">
+        <div class="logo">Samvedh Shetty</div>
+      </a>
+
+      <ul>
+        <li><a href="../index.html#about">About</a></li>
+        <li><a href="../index.html#education">Education</a></li>
+        <li><a href="../index.html#skills">Skills</a></li>
+        <li><a href="../index.html#projects">Projects</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main">
+    <header class="project-hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="../index.html#projects">Projects</a>
+          <span>›</span>
+          <span>NREL S826 Aerofoil CFD Validation</span>
+        </div>
+
+        <h1>NREL S826 Aerofoil CFD Validation &amp; Wind-Tunnel Correlation</h1>
+
+        <p class="project-intro">
+          STAR-CCM+ CFD and wind-tunnel evaluation of an NREL S826 aerofoil across increasing angle of attack.
+          The project combined mesh convergence, low-y+ wall treatment, pressure and velocity field interpretation,
+          and CFD-to-experiment correlation for lift coefficient, drag coefficient and surface pressure distribution.
+        </p>
+
+        <div class="project-tags" style="margin-top: 18px;">
+          <span class="tag">STAR-CCM+</span>
+          <span class="tag">CFD Validation</span>
+          <span class="tag">Wind Tunnel</span>
+          <span class="tag">Aerodynamics</span>
+          <span class="tag">Correlation</span>
+        </div>
+
+        <div class="metric-strip" aria-label="Headline project results">
+          <div class="metric-card">
+            <strong>0°–16°</strong>
+            <span>wind-tunnel AoA sweep</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>4 mm</strong>
+            <span>selected mesh base size</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>Low-y+</strong>
+            <span>near-wall treatment selected</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>10.08%</strong>
+            <span>average Cl correlation error</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>15.61%</strong>
+            <span>average Cd correlation error</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section style="padding-top: 0;">
+      <div class="project-shell">
+        <article class="case-panel">
+
+          <section class="case-section">
+            <span class="section-kicker">Project summary</span>
+            <h2>What this project demonstrates</h2>
+
+            <p>
+              This project demonstrates a complete validation workflow for an aerofoil: CFD model preparation,
+              mesh-convergence assessment, wall-y+ strategy comparison, physical wind-tunnel testing, and correlation
+              between numerical and experimental aerodynamic data. The work focused on understanding not just the final
+              coefficient values, but also why correlation quality changed with angle of attack.
+            </p>
+
+            <h2>Engineering question</h2>
+
+            <p>
+              How accurately can a STAR-CCM+ RANS CFD model predict the aerodynamic performance of an NREL S826
+              aerofoil when compared against wind-tunnel measurements across increasing angle of attack?
+            </p>
+
+            <figure class="hero-figure">
+              <img
+                src="Aerofoil-CFD/aerofoil-wind-tunnel-test-section.png"
+                alt="NREL S826 aerofoil mounted in the wind tunnel test section"
+              />
+              <figcaption>
+                Aerofoil mounted in the wind-tunnel test section for experimental pressure and force measurement.
+              </figcaption>
+            </figure>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">01 — Experimental setup</span>
+            <h2>Wind-Tunnel Testing Workflow</h2>
+
+            <p class="section-lead">
+              The aerofoil was tested in the Oxford Brookes wind tunnel using a controlled angle-of-attack sweep.
+              The workflow involved securing the model, connecting pressure tappings to the pressure scanner,
+              aligning the Pitot-static tube, setting the micromanometer to read velocity, entering ambient conditions
+              into VDAS, and logging the data for each angle.
+            </p>
+
+            <div class="slideshow-container" id="experimentalSlideshow">
+
+              <div class="slide active">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-wind-tunnel-rig.png"
+                      alt="Oxford Brookes wind tunnel rig used for aerofoil testing"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Experimental slide 01</span>
+                    <h3>Wind-tunnel rig</h3>
+
+                    <p>
+                      The full tunnel setup provided the physical test environment for the aerofoil correlation study.
+                      Using an experimental rig made the project more than a numerical exercise: the CFD outputs could be
+                      checked against measured wind-tunnel behaviour.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-mounted-wind-section.png"
+                      alt="Aerofoil mounted in the wind tunnel working section"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Experimental slide 02</span>
+                    <h3>Aerofoil mounted in working section</h3>
+
+                    <p>
+                      The mounted aerofoil was connected through pressure tappings so that surface pressure distribution
+                      could be measured and compared against CFD pressure-coefficient predictions at multiple angles of attack.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-micromanometer-instrumentation.png"
+                      alt="Micromanometer and pressure instrumentation used during wind tunnel testing"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Experimental slide 03</span>
+                    <h3>Micromanometer and pressure measurement</h3>
+
+                    <p>
+                      The micromanometer and pressure-scanning system were used to support tunnel-speed and pressure
+                      measurement. This instrumentation linked the physical test to the coefficient and pressure-correlation
+                      plots used later in the analysis.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide-controls">
+                <button class="slide-btn prev" aria-label="Previous experimental slide">&#10094;</button>
+
+                <div class="slide-dots">
+                  <span class="dot active"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+
+                <button class="slide-btn next" aria-label="Next experimental slide">&#10095;</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">02 — CFD methodology</span>
+            <h2>Mesh Convergence and Wall-y+ Strategy</h2>
+
+            <p class="section-lead">
+              The CFD setup used STAR-CCM+ with 2D aerofoil meshing, local surface refinement, trailing-edge refinement,
+              wake refinement and prism-layer control. Mesh convergence and wall-y+ treatment were assessed before using
+              the CFD data for experimental correlation.
+            </p>
+
+            <div class="slideshow-container" id="methodologySlideshow">
+
+              <div class="slide active">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-mesh-convergence.png"
+                      alt="Mesh convergence plot for NREL S826 aerofoil CFD at 16 degrees angle of attack"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">CFD slide 01</span>
+                    <h3>Mesh convergence</h3>
+
+                    <p>
+                      Mesh convergence was assessed at 16° angle of attack. The selected 4 mm base-size mesh gave the
+                      best balance between accuracy and computational cost, while coarser meshes showed larger coefficient
+                      error and weaker correlation reliability.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-mesh-refinement.png"
+                      alt="Aerofoil mesh refinement, wake refinement and prism layer mesh"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">CFD slide 02</span>
+                    <h3>Prism layers and wake refinement</h3>
+
+                    <p>
+                      Local mesh refinement was applied around the aerofoil surface, leading edge, trailing edge and wake.
+                      This was necessary because lift, drag and pressure recovery are sensitive to near-wall gradients,
+                      separation behaviour and wake momentum deficit.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-wall-yplus-validation.png"
+                      alt="Low-y+ and high-y+ wall treatment comparison for aerofoil CFD"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">CFD slide 03</span>
+                    <h3>Low-y+ wall treatment</h3>
+
+                    <p>
+                      The low-y+ approach gave better agreement than the high-y+ approach. This was important because
+                      aerofoil performance is dominated by near-wall behaviour, leading-edge suction and separation sensitivity,
+                      especially as angle of attack increases.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide-controls">
+                <button class="slide-btn prev" aria-label="Previous CFD methodology slide">&#10094;</button>
+
+                <div class="slide-dots">
+                  <span class="dot active"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+
+                <button class="slide-btn next" aria-label="Next CFD methodology slide">&#10095;</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">03 — Flow-field analysis</span>
+            <h2>Velocity Field Development with Angle of Attack</h2>
+
+            <p class="section-lead">
+              The velocity contours were used to interpret wake development and increasing separation tendency as angle
+              of attack increased. This helped explain why low-angle cases correlated better than higher-angle cases.
+            </p>
+
+            <div class="slideshow-container" id="flowfieldSlideshow">
+
+              <div class="slide active">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-aoa0-velocity.png"
+                      alt="Velocity contour around NREL S826 aerofoil at 0 degrees angle of attack"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Flow-field slide 01</span>
+                    <h3>0° angle of attack</h3>
+
+                    <p>
+                      At low angle of attack, the flow field remains comparatively attached and the wake is narrow.
+                      This condition is easier for steady RANS CFD to predict, which supports stronger experimental
+                      correlation at lower angles.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-aoa8-velocity.png"
+                      alt="Velocity contour around NREL S826 aerofoil at 8 degrees angle of attack"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Flow-field slide 02</span>
+                    <h3>8° angle of attack</h3>
+
+                    <p>
+                      At moderate angle of attack, the suction-side acceleration and wake structure become more pronounced.
+                      The pressure recovery region becomes more sensitive to mesh resolution and turbulence modelling.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-aoa16-velocity.png"
+                      alt="Velocity contour around NREL S826 aerofoil at 16 degrees angle of attack"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Flow-field slide 03</span>
+                    <h3>16° angle of attack</h3>
+
+                    <p>
+                      At high angle of attack, the wake becomes stronger and separation sensitivity increases. This is where
+                      the CFD-to-experiment correlation becomes more difficult because the result is more dependent on
+                      turbulence modelling, near-wall resolution and experimental uncertainty.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide-controls">
+                <button class="slide-btn prev" aria-label="Previous flow-field slide">&#10094;</button>
+
+                <div class="slide-dots">
+                  <span class="dot active"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+
+                <button class="slide-btn next" aria-label="Next flow-field slide">&#10095;</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">04 — Correlation results</span>
+            <h2>CFD versus Wind-Tunnel Correlation</h2>
+
+            <p class="section-lead">
+              The correlation work compared global force coefficients and surface pressure distribution. The coefficient
+              comparison showed the overall performance trend, while the Cp plots showed how well CFD captured the pressure
+              distribution along the aerofoil chord at each angle of attack.
+            </p>
+
+            <div class="slideshow-container" id="correlationSlideshow">
+
+              <div class="slide active">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-cl-correlation.png"
+                      alt="CFD and experimental lift coefficient correlation across angle of attack"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Correlation slide 01</span>
+                    <h3>Lift coefficient correlation</h3>
+
+                    <p>
+                      The CFD and experimental lift trends showed reasonable agreement, with an average Cl error of 10.08%.
+                      Agreement was strongest at lower angles of attack and weakened as separation effects became more dominant.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-cp-correlation-0deg.png"
+                      alt="Pressure coefficient correlation at 0 degrees angle of attack"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Correlation slide 02</span>
+                    <h3>Cp correlation at 0°</h3>
+
+                    <p>
+                      At 0°, the pressure distribution remains comparatively stable and attached. This case is useful as a
+                      low-angle baseline for checking whether the CFD captures the basic suction and pressure-side behaviour.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-cp-correlation-4deg.png"
+                      alt="Pressure coefficient correlation at 4 degrees angle of attack"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Correlation slide 03</span>
+                    <h3>Cp correlation at 4°</h3>
+
+                    <p>
+                      At 4°, the pressure difference between the upper and lower surfaces increases, but the flow is still
+                      relatively controlled. This allows the CFD model to capture the trend without the strong separation
+                      uncertainty seen at higher angles.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-cp-correlation-8deg.png"
+                      alt="Pressure coefficient correlation at 8 degrees angle of attack"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Correlation slide 04</span>
+                    <h3>Cp correlation at 8°</h3>
+
+                    <p>
+                      At 8°, suction-side loading becomes stronger and the CFD prediction becomes more sensitive to the
+                      leading-edge pressure peak, pressure recovery and near-wall model behaviour.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-cp-correlation-12deg.png"
+                      alt="Pressure coefficient correlation at 12 degrees angle of attack"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Correlation slide 05</span>
+                    <h3>Cp correlation at 12°</h3>
+
+                    <p>
+                      At 12°, adverse pressure-gradient effects become more important. The upper-surface pressure recovery
+                      is harder to predict accurately, so deviations between CFD and wind-tunnel measurements become more visible.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="Aerofoil-CFD/aerofoil-cp-correlation-16deg.png"
+                      alt="Pressure coefficient correlation at 16 degrees angle of attack"
+                    />
+                  </figure>
+
+                  <div class="slide-text">
+                    <span class="slide-label">Correlation slide 06</span>
+                    <h3>Cp correlation at 16°</h3>
+
+                    <p>
+                      At 16°, separation and stall-onset sensitivity make the correlation most difficult. This explains why
+                      the error increases at higher angle of attack: the flow is no longer dominated by attached-flow behaviour.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide-controls">
+                <button class="slide-btn prev" aria-label="Previous correlation slide">&#10094;</button>
+
+                <div class="slide-dots">
+                  <span class="dot active"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+
+                <button class="slide-btn next" aria-label="Next correlation slide">&#10095;</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">05 — Results</span>
+            <h2>Engineering Outcomes</h2>
+
+            <div class="results-grid">
+              <div class="results-box">
+                <h3>CFD validation workflow</h3>
+
+                <p>
+                  The project connected mesh convergence, near-wall modelling and CFD post-processing with experimental
+                  wind-tunnel data rather than treating CFD as a standalone visualisation exercise.
+                </p>
+              </div>
+
+              <div class="results-box">
+                <h3>Coefficient correlation</h3>
+
+                <p>
+                  The CFD model achieved an average error of 10.08% for Cl and 15.61% for Cd when compared with the
+                  experimental wind-tunnel results.
+                </p>
+              </div>
+
+              <div class="results-box">
+                <h3>Pressure-distribution comparison</h3>
+
+                <p>
+                  Cp correlation was carried out at multiple angles of attack, allowing the comparison to move beyond global
+                  coefficient values and evaluate chordwise surface-pressure behaviour.
+                </p>
+              </div>
+
+              <div class="results-box">
+                <h3>High-AoA interpretation</h3>
+
+                <p>
+                  Correlation error increased at higher angle of attack because stronger adverse pressure gradients and
+                  separation tendency made the CFD result more sensitive to turbulence modelling and experimental uncertainty.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">06 — Reflection</span>
+            <h2>Limitations &amp; Next Steps</h2>
+
+            <div class="reflection-grid">
+              <div class="reflection-card">
+                <h3>Limitations</h3>
+
+                <ul>
+                  <li>Steady RANS CFD was used, so transient separated-flow behaviour was not fully resolved.</li>
+                  <li>Transition modelling was not treated as a dedicated sensitivity study.</li>
+                  <li>Experimental uncertainty from pressure tappings, model alignment and tunnel conditions may affect correlation.</li>
+                  <li>The aerofoil was studied primarily as a 2D section, so finite-span and support effects were not fully represented.</li>
+                </ul>
+              </div>
+
+              <div class="reflection-card">
+                <h3>Future work</h3>
+
+                <ul>
+                  <li>Run transition-sensitive simulations using a dedicated transition model.</li>
+                  <li>Compare steady RANS with URANS at higher angle of attack.</li>
+                  <li>Add finer leading-edge and wake refinement for separated-flow cases.</li>
+                  <li>Quantify uncertainty in pressure tapping data and angle-of-attack alignment.</li>
+                  <li>Extend the study to a 3D wing section with endplate and support effects included.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">Contribution focus</span>
+            <h2>What I Built, Tested and Analysed</h2>
+
+            <div class="capability-grid">
+              <div class="capability-card">
+                <h3>CFD setup</h3>
+
+                <p>
+                  Built the STAR-CCM+ aerofoil CFD setup, including mesh convergence, local refinement and wall-treatment evaluation.
+                </p>
+              </div>
+
+              <div class="capability-card">
+                <h3>Wind-tunnel testing</h3>
+
+                <p>
+                  Participated in the experimental wind-tunnel test workflow, including model setup, instrumentation and AoA sweep data collection.
+                </p>
+              </div>
+
+              <div class="capability-card">
+                <h3>Correlation analysis</h3>
+
+                <p>
+                  Compared CFD and experimental Cl, Cd and Cp behaviour across angle of attack to quantify agreement and identify error growth.
+                </p>
+              </div>
+
+              <div class="capability-card">
+                <h3>Engineering interpretation</h3>
+
+                <p>
+                  Interpreted why higher-AoA cases became harder to correlate due to separation sensitivity and adverse pressure-gradient behaviour.
+                </p>
+              </div>
+            </div>
+
+            <p>
+              <a class="back-link" href="../index.html#projects">← Back to projects</a>
+            </p>
+          </section>
+
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const slideshows = document.querySelectorAll(".slideshow-container");
+
+      slideshows.forEach((slideshow) => {
+        const slides = slideshow.querySelectorAll(".slide");
+        const dots = slideshow.querySelectorAll(".dot");
+        const prevBtn = slideshow.querySelector(".prev");
+        const nextBtn = slideshow.querySelector(".next");
+
+        let current = 0;
+
+        function showSlide(index) {
+          slides.forEach((slide, i) => {
+            slide.classList.toggle("active", i === index);
+          });
+
+          dots.forEach((dot, i) => {
+            dot.classList.toggle("active", i === index);
+          });
+
+          current = index;
+        }
+
+        function nextSlide() {
+          const next = current + 1 >= slides.length ? 0 : current + 1;
+          showSlide(next);
+        }
+
+        function prevSlide() {
+          const prev = current - 1 < 0 ? slides.length - 1 : current - 1;
+          showSlide(prev);
+        }
+
+        if (nextBtn) {
+          nextBtn.addEventListener("click", nextSlide);
+        }
+
+        if (prevBtn) {
+          prevBtn.addEventListener("click", prevSlide);
+        }
+
+        dots.forEach((dot, index) => {
+          dot.addEventListener("click", () => showSlide(index));
+        });
+
+        showSlide(0);
+      });
+    })();
+  </script>
+</body>
+</html>

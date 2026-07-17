@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <meta
+    name="description"
+    content="Oxford Brookes Racing aerodynamics engineering experience by Samvedh Shetty — STAR-CCM+ CFD, Siemens NX surfacing, Formula Student aerodynamic development, wind-tunnel model preparation and CFD correlation planning."
+  />
+
+  <title>Oxford Brookes Racing Aerodynamics Engineer | Samvedh Shetty</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link href="../assets/styles.css" rel="stylesheet"/>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    .project-hero {
+      padding: 44px 0 32px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    .breadcrumb a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .project-intro {
+      max-width: 88ch;
+      opacity: 0.92;
+      font-size: clamp(1rem, 1.35vw, 1.1rem);
+      line-height: 1.65;
+      margin-bottom: 0;
+    }
+
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 10px;
+      margin: 20px 0 0;
+    }
+
+    .metric-card {
+      padding: 13px 14px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .metric-card strong {
+      display: block;
+      font-size: 1.12rem;
+      line-height: 1.15;
+      margin-bottom: 4px;
+    }
+
+    .metric-card span {
+      display: block;
+      font-size: 0.9rem;
+      opacity: 0.82;
+      line-height: 1.35;
+    }
+
+    .project-shell {
+      width: min(100% - 32px, 1180px);
+      margin-inline: auto;
+    }
+
+    .case-panel {
+      padding: clamp(20px, 3vw, 34px);
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .case-section {
+      padding: 0 !important;
+      margin: 30px 0;
+    }
+
+    .case-section:first-child {
+      margin-top: 0;
+    }
+
+    .case-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-kicker {
+      display: inline-block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.65;
+    }
+
+    .case-section h2 {
+      margin: 0 0 8px;
+    }
+
+    .case-section h3 {
+      margin: 0 0 8px;
+    }
+
+    .case-section p {
+      margin-top: 0;
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .section-lead {
+      opacity: 0.9;
+      max-width: 86ch;
+      line-height: 1.6;
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .figure-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    figure {
+      margin: 0;
+    }
+
+    .figure-grid img,
+    .hero-figure img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .hero-figure {
+      margin-top: 18px;
+    }
+
+    figcaption {
+      margin-top: 7px;
+      font-size: 0.86rem;
+      line-height: 1.35;
+      color: rgba(235, 241, 248, 0.82);
+    }
+
+    .scope-grid,
+    .workflow-grid,
+    .reflection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .scope-card,
+    .workflow-card,
+    .reflection-card {
+      padding: 15px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+
+    .scope-card ul,
+    .workflow-card ul,
+    .reflection-card ul {
+      margin: 8px 0 0;
+      padding-left: 19px;
+    }
+
+    .scope-card li,
+    .workflow-card li,
+    .reflection-card li {
+      margin-bottom: 5px;
+      line-height: 1.5;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(235,241,248,0.35);
+      color: inherit;
+    }
+
+    @media (max-width: 760px) {
+      .project-shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      .project-hero {
+        padding: 34px 0 24px;
+      }
+
+      .case-panel {
+        padding: 18px;
+      }
+
+      .case-section {
+        margin: 26px 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav>
+    <div class="container">
+      <a aria-label="Home" href="../index.html" style="text-decoration:none; color:inherit;">
+        <div class="logo">Samvedh Shetty</div>
+      </a>
+
+      <ul>
+        <li><a href="../index.html#about">About</a></li>
+        <li><a href="../index.html#education">Education</a></li>
+        <li><a href="../index.html#skills">Skills</a></li>
+        <li><a href="../index.html#experience">Experience</a></li>
+        <li><a href="../index.html#projects">Projects</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main">
+    <header class="project-hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="../index.html#experience">Experience</a>
+          <span>›</span>
+          <span>Oxford Brookes Racing Aerodynamics Engineer</span>
+        </div>
+
+        <h1>Oxford Brookes Racing — Aerodynamics Engineer</h1>
+
+        <p class="project-intro">
+          Formula Student aerodynamics experience focused on CFD-led aerodynamic development, Siemens NX surfacing,
+          wind-tunnel model preparation and pressure-tapping correlation planning. The work connected digital aerodynamic
+          analysis with physical validation preparation for Oxford Brookes Racing.
+        </p>
+
+        <div class="project-tags" style="margin-top: 18px;">
+          <span class="tag">STAR-CCM+</span>
+          <span class="tag">Siemens NX</span>
+          <span class="tag">Aerodynamics</span>
+          <span class="tag">Formula Student</span>
+          <span class="tag">Wind Tunnel</span>
+        </div>
+
+        <div class="metric-strip" aria-label="Experience summary">
+          <div class="metric-card">
+            <strong>2024</strong>
+            <span>Oxford Brookes Racing</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>STAR-CCM+</strong>
+            <span>CFD analysis workflow</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>Siemens NX</strong>
+            <span>CAD surfacing support</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>10%</strong>
+            <span>wind-tunnel model preparation</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>+7.56%</strong>
+            <span>overall aero efficiency improvement study</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section style="padding-top: 0;">
+      <div class="project-shell">
+        <article class="case-panel">
+
+          <section class="case-section">
+            <span class="section-kicker">Role summary</span>
+            <h2>What this experience demonstrates</h2>
+
+            <p>
+              This role demonstrates hands-on Formula Student aerodynamic development: using CFD to understand flow behaviour,
+              preparing CAD geometry for physical testing, and interpreting aerodynamic changes in terms of performance,
+              efficiency and validation readiness.
+            </p>
+
+            <div class="figure-grid">
+              <figure>
+                <img
+                  src="Experience/obr-aero-cad-model.png"
+                  alt="Siemens NX Formula Student aerodynamic model showing front wing, bodywork and aero surfaces"
+                />
+                <figcaption>
+                  Siemens NX aerodynamic model view showing vehicle bodywork and aero surfaces used for surfacing and
+                  wind-tunnel model preparation.
+                </figcaption>
+              </figure>
+
+              <figure>
+                <img
+                  src="Experience/obr-cfd-flow-analysis.png"
+                  alt="Formula Student CFD flow analysis collage showing streamlines, pressure and velocity contours"
+                />
+                <figcaption>
+                  CFD flow-analysis visuals used to evaluate wing and bodywork behaviour, including local flow structures,
+                  wake interaction and aerodynamic performance trends.
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">01 — Technical scope</span>
+            <h2>Areas of Work</h2>
+
+            <div class="scope-grid">
+              <div class="scope-card">
+                <h3>CFD analysis</h3>
+                <p>
+                  Supported STAR-CCM+ aerodynamic analysis of Formula Student bodywork and wing components.
+                </p>
+                <ul>
+                  <li>Flow-field interpretation</li>
+                  <li>Pressure and velocity contour review</li>
+                  <li>Wing and bodywork performance comparison</li>
+                </ul>
+              </div>
+
+              <div class="scope-card">
+                <h3>CAD surfacing</h3>
+                <p>
+                  Prepared and reviewed Siemens NX aero surfaces for modelling, packaging and test-readiness.
+                </p>
+                <ul>
+                  <li>Surface preparation</li>
+                  <li>CFD-ready geometry support</li>
+                  <li>Wind-tunnel model preparation</li>
+                </ul>
+              </div>
+
+              <div class="scope-card">
+                <h3>Wind-tunnel preparation</h3>
+                <p>
+                  Contributed to preparation work for a 10% wind-tunnel model, supporting physical validation planning.
+                </p>
+                <ul>
+                  <li>10% scale model support</li>
+                  <li>Pressure-tapping planning</li>
+                  <li>CFD-to-test correlation thinking</li>
+                </ul>
+              </div>
+
+              <div class="scope-card">
+                <h3>Performance interpretation</h3>
+                <p>
+                  Interpreted aerodynamic updates in terms of efficiency and component-level behaviour.
+                </p>
+                <ul>
+                  <li>Overall efficiency improvement study</li>
+                  <li>Side-wing flow analysis</li>
+                  <li>Rear-wing performance review</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">02 — Workflow</span>
+            <h2>CFD-to-Test Development Workflow</h2>
+
+            <p class="section-lead">
+              The experience followed a practical motorsport development logic: prepare geometry, run or review CFD,
+              interpret flow structures, identify performance changes, and prepare the work for validation through
+              model-scale wind-tunnel testing.
+            </p>
+
+            <div class="workflow-grid">
+              <div class="workflow-card">
+                <h3>1. Geometry preparation</h3>
+                <p>
+                  Used Siemens NX surfacing and model review to support aerodynamic surfaces suitable for CFD and
+                  wind-tunnel model preparation.
+                </p>
+              </div>
+
+              <div class="workflow-card">
+                <h3>2. CFD assessment</h3>
+                <p>
+                  Reviewed STAR-CCM+ flow-field outputs including local pressure, velocity and streamline behaviour
+                  around aero devices.
+                </p>
+              </div>
+
+              <div class="workflow-card">
+                <h3>3. Component interpretation</h3>
+                <p>
+                  Evaluated how local aero-device behaviour influenced flow quality, wake interaction and overall efficiency.
+                </p>
+              </div>
+
+              <div class="workflow-card">
+                <h3>4. Validation planning</h3>
+                <p>
+                  Supported pressure-tapping and wind-tunnel correlation planning to connect CFD predictions with
+                  physical testing.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">03 — Results and contribution</span>
+            <h2>Engineering Outcomes</h2>
+
+            <div class="reflection-grid">
+              <div class="reflection-card">
+                <h3>Overall aero efficiency</h3>
+                <p>
+                  Contributed to studies associated with an overall aerodynamic efficiency improvement of 7.56%.
+                </p>
+              </div>
+
+              <div class="reflection-card">
+                <h3>Side-wing analysis</h3>
+                <p>
+                  Supported side-wing flow analysis and performance review, contributing to a reported side-wing
+                  improvement of 21.93%.
+                </p>
+              </div>
+
+              <div class="reflection-card">
+                <h3>Rear-wing review</h3>
+                <p>
+                  Supported rear-wing aerodynamic review and interpretation, contributing to a reported rear-wing
+                  improvement of 2.60%.
+                </p>
+              </div>
+
+              <div class="reflection-card">
+                <h3>Correlation mindset</h3>
+                <p>
+                  Strengthened the connection between CFD prediction, model preparation and experimental validation planning.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">04 — Skills developed</span>
+            <h2>Technical Skills Strengthened</h2>
+
+            <div class="scope-grid">
+              <div class="scope-card">
+                <h3>STAR-CCM+ CFD</h3>
+                <p>
+                  Flow-field interpretation, component-level analysis, contour review and aerodynamic performance comparison.
+                </p>
+              </div>
+
+              <div class="scope-card">
+                <h3>Siemens NX surfacing</h3>
+                <p>
+                  Aero-surface preparation, geometry review and CAD support for CFD and physical model readiness.
+                </p>
+              </div>
+
+              <div class="scope-card">
+                <h3>Wind-tunnel thinking</h3>
+                <p>
+                  10% model preparation, pressure tapping and test-correlation planning for aerodynamic validation.
+                </p>
+              </div>
+
+              <div class="scope-card">
+                <h3>Formula Student development</h3>
+                <p>
+                  Applying simulation and design judgement in a fast-paced student motorsport environment.
+                </p>
+              </div>
+            </div>
+
+            <p>
+              <a class="back-link" href="../index.html#experience">← Back to experience</a>
+            </p>
+          </section>
+
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
