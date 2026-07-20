@@ -1,1 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta
+    name="description"
+    content="F1 2026 lap-time simulation and race engineering case study by Samvedh Shetty — AVL VSM setup optimisation across aerodynamics, vehicle dynamics and powertrain systems."
+  />
+  <title>F1 2026 Lap-Time Simulation & Race Engineering | Samvedh Shetty</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link href="../assets/styles.css" rel="stylesheet"/>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    .project-hero {
+      padding: 44px 0 32px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    .breadcrumb a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .project-intro {
+      max-width: 86ch;
+      opacity: 0.92;
+      font-size: clamp(1rem, 1.35vw, 1.1rem);
+      line-height: 1.65;
+      margin-bottom: 0;
+    }
+
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 10px;
+      margin: 20px 0 0;
+    }
+
+    .metric-card {
+      padding: 13px 14px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .metric-card strong {
+      display: block;
+      font-size: 1.18rem;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .metric-card span {
+      display: block;
+      font-size: 0.9rem;
+      opacity: 0.82;
+      line-height: 1.35;
+    }
+
+    .project-shell {
+      width: min(100% - 32px, 1180px);
+      margin-inline: auto;
+    }
+
+    .case-panel {
+      padding: clamp(20px, 3vw, 34px);
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .case-section {
+      padding: 0 !important;
+      margin: 30px 0;
+    }
+
+    .case-section:first-child {
+      margin-top: 0;
+    }
+
+    .case-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-kicker {
+      display: inline-block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.65;
+    }
+
+    .case-section h2 {
+      margin: 0 0 8px;
+    }
+
+    .case-section h3 {
+      margin: 0 0 8px;
+    }
+
+    .section-lead {
+      opacity: 0.9;
+      max-width: 84ch;
+      line-height: 1.6;
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    .case-section p {
+      margin-top: 0;
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .case-section ul,
+    .case-section ol {
+      margin-top: 8px;
+      margin-bottom: 10px;
+    }
+
+    .case-section li {
+      margin-bottom: 4px;
+    }
+
+    .figure-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+      gap: clamp(16px, 2vw, 24px);
+      margin-top: 14px;
+    }
+
+    figure {
+      margin: 0;
+    }
+
+    .figure-grid img,
+    .wide-figure img,
+    .slide img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    figcaption {
+      margin-top: 7px;
+      font-size: 0.86rem;
+      line-height: 1.35;
+      color: rgba(235, 241, 248, 0.82);
+    }
+
+    .wide-figure {
+      margin-top: 16px;
+    }
+
+    .slideshow-container {
+      position: relative;
+      margin: 18px 0 28px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    }
+
+    .slide {
+      display: none;
+      padding: clamp(14px, 2vw, 22px);
+      animation: fadeSlide 0.45s ease;
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    .slide-content {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+      gap: clamp(18px, 2.5vw, 28px);
+      align-items: center;
+    }
+
+    .slide-text {
+      min-width: 0;
+    }
+
+    .slide-text h3 {
+      margin-bottom: 8px;
+    }
+
+    .slide-text p {
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    .slide-label {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.65;
+    }
+
+    .slide-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 0 0 16px;
+    }
+
+    .slide-btn {
+      background: rgba(255,255,255,0.09);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.18);
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .slide-btn:hover {
+      background: rgba(255,255,255,0.16);
+    }
+
+    .slide-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      cursor: pointer;
+    }
+
+    .dot.active {
+      background: white;
+    }
+
+    .results-box,
+    .reflection-card {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .reflection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .capability-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .capability-card {
+      padding: 15px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+
+    .capability-card h3 {
+      margin-bottom: 6px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(235,241,248,0.35);
+      color: inherit;
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 860px) {
+      .slide-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .project-shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      .project-hero {
+        padding: 34px 0 24px;
+      }
+
+      .case-panel {
+        padding: 18px;
+      }
+
+      .case-section {
+        margin: 26px 0;
+      }
+
+      .metric-card {
+        padding: 12px;
+      }
+
+      .slide {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav>
+    <div class="container">
+      <a aria-label="Home" href="../index.html" style="text-decoration:none; color:inherit;">
+        <div class="logo">Samvedh Shetty</div>
+      </a>
+      <ul>
+        <li><a href="../index.html#about">About</a></li>
+        <li><a href="../index.html#education">Education</a></li>
+        <li><a href="../index.html#skills">Skills</a></li>
+        <li><a href="../index.html#projects">Projects</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main">
+    <header class="project-hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="../index.html#projects">Projects</a>
+          <span>›</span>
+          <span>F1 2026 Lap-Time Simulation &amp; Race Engineering</span>
+        </div>
+
+        <h1>F1 2026 Lap-Time Simulation &amp; Race Engineering</h1>
+
+        <p class="project-intro">
+          AVL VSM simulation-led optimisation of a 2026-regulation Formula 1 vehicle model at the Red Bull Ring.
+          The study treated lap time as a systems problem: aerodynamic drag/downforce trade-off, active aero balance,
+          ride-height sensitivity, tyre and load-transfer behaviour, MGU-K deployment, gearbox usage and fuel constraints
+          were evaluated together.
+        </p>
+
+        <div class="project-tags" style="margin-top: 18px;">
+          <span class="tag">AVL VSM</span>
+          <span class="tag">Lap-Time Simulation</span>
+          <span class="tag">Race Engineering</span>
+          <span class="tag">Vehicle Dynamics</span>
+          <span class="tag">Powertrain</span>
+        </div>
+
+        <div class="metric-strip" aria-label="Headline project results">
+          <div class="metric-card">
+            <strong>72.075s</strong>
+            <span>F1 2026 baseline lap time</span>
+          </div>
+          <div class="metric-card">
+            <strong>66.350s</strong>
+            <span>optimised simulated lap time</span>
+          </div>
+          <div class="metric-card">
+            <strong>5.725s</strong>
+            <span>simulated lap-time gain</span>
+          </div>
+          <div class="metric-card">
+            <strong>350 kW</strong>
+            <span>MGU-K power limit modelled</span>
+          </div>
+          <div class="metric-card">
+            <strong>8500 kJ</strong>
+            <span>ERS deployment limit considered</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section style="padding-top: 0;">
+      <div class="project-shell">
+        <article class="case-panel">
+
+          <section class="case-section">
+            <span class="section-kicker">Project summary</span>
+            <h2>What this project demonstrates</h2>
+            <p>
+              This case study demonstrates a systems-level race engineering workflow: define a 2026-regulation baseline,
+              run virtual tests, optimise aerodynamic and mechanical setup parameters, tune powertrain deployment, and
+              evaluate the final result using lap time and vehicle behaviour rather than isolated subsystem metrics.
+            </p>
+
+            <h2>Engineering question</h2>
+            <p>
+              How can a 2026-regulation F1 vehicle model be optimised at the Red Bull Ring while balancing aero efficiency,
+              handling stability, ERS deployment, gearbox behaviour and fuel constraints?
+            </p>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">01 — Track and workflow</span>
+            <h2>Race Engineering Context</h2>
+            <p class="section-lead">
+              The Red Bull Ring was used as the target circuit because it forces a setup compromise between straight-line
+              efficiency, heavy braking stability and mixed-speed cornering. Long acceleration zones reward low drag and
+              strong ERS deployment, while the corner sequence still requires sufficient downforce, tyre support and aero
+              balance stability.
+            </p>
+
+            <div class="figure-grid">
+              <figure>
+                <img
+                  src="F1-26/f1-red-bull-ring-track-map.png"
+                  alt="Red Bull Ring track map used for F1 2026 lap-time simulation"
+                />
+                <figcaption>
+                  Red Bull Ring track map used to define the simulation context and setup requirements.
+                </figcaption>
+              </figure>
+
+              <figure>
+                <img
+                  src="F1-26/f1-systems-methodology-flow.png"
+                  alt="Race engineering methodology flowchart for AVL VSM optimisation"
+                />
+                <figcaption>
+                  System-level workflow linking aerodynamics, vehicle dynamics and powertrain development streams.
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">02 — Aerodynamic optimisation</span>
+            <h2>Aerodynamic Setup, Active Aero &amp; Ride Height</h2>
+            <p class="section-lead">
+              Aerodynamic optimisation focused on recovering performance inside the reduced 2026 aerodynamic envelope.
+              The key challenge was improving speed and efficiency without creating excessive balance migration during
+              braking, deployment zones or corner transitions.
+            </p>
+
+            <div class="slideshow-container" id="aeroSlideshow">
+              <div class="slide active">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="F1-26/f1-baseline-2024-vs-2026-aero-metrics.png"
+                      alt="Comparison of F1 2024 and F1 2026 baseline aerodynamic metrics"
+                    />
+                  </figure>
+                  <div class="slide-text">
+                    <span class="slide-label">Aero slide 01</span>
+                    <h3>2024 vs 2026 aerodynamic baseline</h3>
+                    <p>
+                      This plot establishes the regulation-driven performance gap between the 2024 reference and the 2026
+                      baseline. The 2026 model produces reduced downforce and drag, giving higher efficiency but less
+                      cornering load. The key issue is how the reduced aerodynamic envelope affects balance migration under
+                      braking, cornering and deployment zones.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="F1-26/f1-active-aero-deployment.png"
+                      alt="Active aero deployment over distance for front and rear wing"
+                    />
+                  </figure>
+                  <div class="slide-text">
+                    <span class="slide-label">Aero slide 02</span>
+                    <h3>Active aero deployment</h3>
+                    <p>
+                      Front and rear wing offsets were applied over lap distance to model active aero behaviour. In AVL VSM,
+                      these wing-angle inputs shift the base aero map rather than representing literal physical wing angles,
+                      so the setup must be interpreted as map-offset control rather than direct geometry change.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="F1-26/f1-drs-aero-balance.png"
+                      alt="Aero balance comparison for two DRS open-angle configurations"
+                    />
+                  </figure>
+                  <div class="slide-text">
+                    <span class="slide-label">Aero slide 03</span>
+                    <h3>Drag reduction versus balance stability</h3>
+                    <p>
+                      This comparison shows why the lowest-drag configuration is not automatically the best race setup.
+                      The stronger drag-reduction option can generate larger aero-balance movement, while the more stable
+                      option sacrifices some efficiency for rear stability and driver confidence.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="F1-26/f1-ride-height-laptime-map.png"
+                      alt="Lap time variation across front and rear ride height combinations"
+                    />
+                  </figure>
+                  <div class="slide-text">
+                    <span class="slide-label">Aero slide 04</span>
+                    <h3>Ride-height lap-time sensitivity</h3>
+                    <p>
+                      The ride-height map shows the aero platform sensitivity of the 2026 model. Low front ride height with
+                      moderate rear ride height produced the strongest lap-time region, indicating that front ground-clearance
+                      control was especially important for load generation and balance.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="F1-26/f1-optimised-vs-baseline-aero-metrics.png"
+                      alt="Comparison of F1 2026 baseline and optimised aerodynamic metrics"
+                    />
+                  </figure>
+                  <div class="slide-text">
+                    <span class="slide-label">Aero slide 05</span>
+                    <h3>Optimised versus baseline aero result</h3>
+                    <p>
+                      The optimised setup improved straight-line speed in deployment zones through targeted drag reduction
+                      while keeping off-deployment drag, downforce and aero balance close to the target operating window.
+                      The aero gain is useful because it improves lap time without destabilising the car outside activation zones.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide-controls">
+                <button class="slide-btn prev" aria-label="Previous aero slide">&#10094;</button>
+                <div class="slide-dots">
+                  <span class="dot active"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+                <button class="slide-btn next" aria-label="Next aero slide">&#10095;</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">03 — Vehicle dynamics optimisation</span>
+            <h2>Tyre Behaviour, Setup Sensitivity &amp; Mechanical Balance</h2>
+            <p class="section-lead">
+              Vehicle dynamics optimisation was used to identify which mechanical setup parameters had the largest lap-time
+              authority. The goal was to separate real performance drivers from low-value tuning changes.
+            </p>
+
+            <div class="slideshow-container" id="vehicleDynamicsSlideshow">
+              <div class="slide active">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="F1-26/f1-vehicle-dynamics-methodology.png"
+                      alt="Vehicle dynamics optimisation methodology"
+                    />
+                  </figure>
+                  <div class="slide-text">
+                    <span class="slide-label">VD slide 01</span>
+                    <h3>Vehicle dynamics workflow</h3>
+                    <p>
+                      The workflow starts from tyre behaviour and skid-pad response before moving into full-circuit setup
+                      changes. This matters because lap-time changes need to be traced back to physical mechanisms:
+                      tyre force generation, balance, load transfer, ride response and pitch sensitivity.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="F1-26/f1-tyre-fx-slip-ratio.png"
+                      alt="Longitudinal tyre force versus slip ratio for different vertical loads"
+                    />
+                  </figure>
+                  <div class="slide-text">
+                    <span class="slide-label">VD slide 02</span>
+                    <h3>Tyre force behaviour</h3>
+                    <p>
+                      The longitudinal tyre-force plot shows how force generation varies with slip ratio and vertical load.
+                      Higher vertical load increases available longitudinal force, but the relationship is not perfectly linear,
+                      which is critical for braking, traction and load-transfer analysis.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="F1-26/f1-vehicle-dynamics-sensitivity-delta.png"
+                      alt="Performance delta of setup changes relative to F1 2026 baseline"
+                    />
+                  </figure>
+                  <div class="slide-text">
+                    <span class="slide-label">VD slide 03</span>
+                    <h3>Setup sensitivity ranking</h3>
+                    <p>
+                      The sensitivity chart ranks setup changes by lap-time effect relative to the 2026 baseline. Alignment
+                      and camber changes show especially strong influence, highlighting that mechanical setup still has
+                      major lap-time authority even in an aero-led vehicle model.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide-controls">
+                <button class="slide-btn prev" aria-label="Previous vehicle dynamics slide">&#10094;</button>
+                <div class="slide-dots">
+                  <span class="dot active"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+                <button class="slide-btn next" aria-label="Next vehicle dynamics slide">&#10095;</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">04 — Powertrain and race strategy</span>
+            <h2>ERS Deployment, Gearbox Usage &amp; Fuel Constraint</h2>
+            <p class="section-lead">
+              Powertrain optimisation focused on using the 2026 MGU-K and energy limits effectively. The setup needed to
+              support acceleration while respecting deployment, traction and fuel-use constraints.
+            </p>
+
+            <div class="slideshow-container" id="powertrainSlideshow">
+              <div class="slide active">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="F1-26/f1-mguk-ers-deployment.png"
+                      alt="MGU-K ERS deployment power over distance"
+                    />
+                  </figure>
+                  <div class="slide-text">
+                    <span class="slide-label">Powertrain slide 01</span>
+                    <h3>MGU-K / ERS deployment</h3>
+                    <p>
+                      Electrical power delivery was shaped over lap distance rather than deployed blindly. Sector-based
+                      deployment helps align torque delivery with traction availability, straights and energy limits, reducing
+                      wheelspin risk while supporting acceleration where it matters most.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="F1-26/f1-gearbox-position-optimisation.png"
+                      alt="Gearbox position over distance before and after optimisation"
+                    />
+                  </figure>
+                  <div class="slide-text">
+                    <span class="slide-label">Powertrain slide 02</span>
+                    <h3>Gearbox optimisation</h3>
+                    <p>
+                      The gearbox position plot shows whether the car is using the available ratios effectively across the lap.
+                      A poor ratio set can trap the vehicle in unsuitable gears, limiting acceleration and forcing inefficient
+                      braking or shift behaviour. The optimised setup improves gear utilisation across key zones.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide">
+                <div class="slide-content">
+                  <figure>
+                    <img
+                      src="F1-26/f1-fuel-consumption-comparison.png"
+                      alt="Fuel consumption comparison over distance"
+                    />
+                  </figure>
+                  <div class="slide-text">
+                    <span class="slide-label">Powertrain slide 03</span>
+                    <h3>Fuel consumption strategy</h3>
+                    <p>
+                      Under 2026-style constraints, fuel use is linked to energy flow, so throttle mapping and high-RPM
+                      behaviour affect both performance and legality. Comparing full-throttle and limited-throttle behaviour
+                      shows how race strategy can manage fuel without treating energy use and lap time separately.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="slide-controls">
+                <button class="slide-btn prev" aria-label="Previous powertrain slide">&#10094;</button>
+                <div class="slide-dots">
+                  <span class="dot active"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+                <button class="slide-btn next" aria-label="Next powertrain slide">&#10095;</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">05 — Integrated result</span>
+            <h2>Final Lap-Time Result</h2>
+            <p class="section-lead">
+              The final result shows the value of system integration. The optimised 2026 setup reduced simulated lap time
+              from 72.075 s to 66.350 s, a 5.725 s improvement over the baseline. The optimised car remained slower than
+              the 2024 reference, which is expected because the 2026 model is constrained by lower aerodynamic load and
+              updated powertrain limits.
+            </p>
+
+            <div class="figure-grid">
+              <figure>
+                <img
+                  src="F1-26/f1-final-laptime-table.png"
+                  alt="Final lap time comparison between F1 2024, F1 2026 baseline and F1 2026 optimised setup"
+                />
+                <figcaption>
+                  Final lap-time comparison: F1 2024 reference, F1 2026 baseline and F1 2026 optimised setup.
+                </figcaption>
+              </figure>
+            </div>
+
+            <div class="results-grid">
+              <div class="results-box">
+                <h3>Key result</h3>
+                <p>
+                  The simulated F1 2026 lap time improved from <strong>72.075 s</strong> to <strong>66.350 s</strong>,
+                  giving a <strong>5.725 s</strong> improvement over the baseline.
+                </p>
+              </div>
+
+              <div class="results-box">
+                <h3>Engineering takeaway</h3>
+                <p>
+                  The gain came from coordinated subsystem tuning rather than a single isolated change: aero deployment,
+                  ride height, mechanical setup, ERS strategy, gearbox usage and fuel constraints all contributed to the
+                  final performance envelope.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">06 — Reflection</span>
+            <h2>Limitations &amp; Next Steps</h2>
+
+            <div class="reflection-grid">
+              <div class="reflection-card">
+                <h3>Limitations</h3>
+                <ul>
+                  <li>Group project, so subsystem ownership belongs within a collaborative workflow.</li>
+                  <li>2026 aerodynamic model used scaled aero maps rather than CFD or wind-tunnel-derived data.</li>
+                  <li>Powertrain maps were regulation-informed rather than manufacturer-specific engine data.</li>
+                  <li>Simulation result is virtual and not track-validated.</li>
+                </ul>
+              </div>
+
+              <div class="reflection-card">
+                <h3>Future work</h3>
+                <ul>
+                  <li>Replace scaled aero maps with CFD-derived 2026 aerodynamic data.</li>
+                  <li>Validate powertrain maps against higher-fidelity PU data.</li>
+                  <li>Include tyre degradation and stint-based race optimisation.</li>
+                  <li>Run robustness studies across fuel load, track temperature and driver model variation.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">Contribution focus</span>
+            <h2>What I Contributed</h2>
+
+            <div class="capability-grid">
+              <div class="capability-card">
+                <h3>Aero setup interpretation</h3>
+                <p>Worked with active aero, deployment logic, aero balance and ride-height sensitivity outputs.</p>
+              </div>
+
+              <div class="capability-card">
+                <h3>Simulation analysis</h3>
+                <p>Used AVL VSM outputs to compare lap-time, speed, downforce, drag and balance behaviour.</p>
+              </div>
+
+              <div class="capability-card">
+                <h3>Systems thinking</h3>
+                <p>Connected aerodynamic setup decisions with vehicle dynamics and powertrain performance effects.</p>
+              </div>
+
+              <div class="capability-card">
+                <h3>Race engineering judgement</h3>
+                <p>Interpreted trade-offs between qualifying performance, stability, efficiency and regulation limits.</p>
+              </div>
+            </div>
+
+            <p>
+              <a class="back-link" href="../index.html#projects">← Back to projects</a>
+            </p>
+          </section>
+
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const slideshows = document.querySelectorAll(".slideshow-container");
+
+      slideshows.forEach((slideshow) => {
+        const slides = slideshow.querySelectorAll(".slide");
+        const dots = slideshow.querySelectorAll(".dot");
+        const prevBtn = slideshow.querySelector(".prev");
+        const nextBtn = slideshow.querySelector(".next");
+
+        let current = 0;
+
+        function showSlide(index) {
+          slides.forEach((slide, i) => {
+            slide.classList.toggle("active", i === index);
+          });
+
+          dots.forEach((dot, i) => {
+            dot.classList.toggle("active", i === index);
+          });
+
+          current = index;
+        }
+
+        function nextSlide() {
+          const next = current + 1 >= slides.length ? 0 : current + 1;
+          showSlide(next);
+        }
+
+        function prevSlide() {
+          const prev = current - 1 < 0 ? slides.length - 1 : current - 1;
+          showSlide(prev);
+        }
+
+        if (nextBtn) {
+          nextBtn.addEventListener("click", nextSlide);
+        }
+
+        if (prevBtn) {
+          prevBtn.addEventListener("click", prevSlide);
+        }
+
+        dots.forEach((dot, index) => {
+          dot.addEventListener("click", () => showSlide(index));
+        });
+
+        showSlide(0);
+      });
+    })();
+  </script>
+</body>
+</html>
