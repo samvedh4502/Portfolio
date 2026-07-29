@@ -6,10 +6,10 @@
 
   <meta
     name="description"
-    content="Tata Motors multi-body dynamics internship case study by Samvedh Shetty — MSC ADAMS vehicle dynamics, K&C, steady-state handling, parking brake efficiency simulation and MATLAB/Excel post-processing."
+    content="Tata Motors chassis simulation internship case study by Samvedh Shetty — Kinematics and Compliance, steady-state handling, MSC ADAMS, compact SUV chassis simulation, Constant Radius Cornering methodology and CAE-to-test correlation."
   />
 
-  <title>Tata Motors Multi-Body Dynamics Internship | Samvedh Shetty</title>
+  <title>Tata Motors K&C and Steady-State Handling Simulation | Samvedh Shetty</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -96,7 +96,7 @@
 
     .case-section {
       padding: 0 !important;
-      margin: 30px 0;
+      margin: 32px 0;
     }
 
     .case-section:first-child {
@@ -160,7 +160,8 @@
 
     .scope-grid,
     .workflow-grid,
-    .reflection-grid {
+    .reflection-grid,
+    .results-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
       gap: 14px;
@@ -169,7 +170,8 @@
 
     .scope-card,
     .workflow-card,
-    .reflection-card {
+    .reflection-card,
+    .results-box {
       padding: 15px;
       border-radius: 16px;
       background: rgba(255,255,255,0.045);
@@ -178,14 +180,16 @@
 
     .scope-card ul,
     .workflow-card ul,
-    .reflection-card ul {
+    .reflection-card ul,
+    .results-box ul {
       margin: 8px 0 0;
       padding-left: 19px;
     }
 
     .scope-card li,
     .workflow-card li,
-    .reflection-card li {
+    .reflection-card li,
+    .results-box li {
       margin-bottom: 5px;
       line-height: 1.5;
     }
@@ -203,12 +207,143 @@
       margin-bottom: 5px;
     }
 
+    .cascade-gallery {
+      position: relative;
+      margin: 18px 0 30px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      box-shadow: 0 22px 55px rgba(0,0,0,0.22);
+    }
+
+    .cascade-slide {
+      display: none;
+      grid-template-columns: minmax(0, 1.12fr) minmax(280px, 0.88fr);
+      gap: clamp(18px, 3vw, 34px);
+      align-items: center;
+      padding: clamp(16px, 3vw, 30px);
+      min-height: 420px;
+    }
+
+    .cascade-slide.active {
+      display: grid;
+    }
+
+    .cascade-image {
+      position: relative;
+    }
+
+    .cascade-image::before,
+    .cascade-image::after {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      transform: rotate(-2.5deg) translate(-10px, 10px);
+      z-index: 0;
+    }
+
+    .cascade-image::after {
+      transform: rotate(2deg) translate(12px, 18px);
+      opacity: 0.55;
+    }
+
+    .cascade-image img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      display: block;
+      border-radius: 18px;
+      background: #ffffff;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.28);
+    }
+
+    .cascade-text {
+      min-width: 0;
+    }
+
+    .cascade-text h3 {
+      margin: 0 0 8px;
+    }
+
+    .cascade-text p {
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    .slide-label {
+      display: inline-block;
+      margin-bottom: 6px;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.65;
+    }
+
+    .cascade-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      padding: 0 0 18px;
+    }
+
+    .cascade-btn {
+      background: rgba(255,255,255,0.09);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.18);
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .cascade-btn:hover {
+      background: rgba(255,255,255,0.16);
+    }
+
+    .cascade-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      max-width: 520px;
+    }
+
+    .cascade-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      cursor: pointer;
+    }
+
+    .cascade-dot.active {
+      background: white;
+    }
+
     .back-link {
       display: inline-block;
       margin-top: 10px;
       text-decoration: none;
       border-bottom: 1px solid rgba(235,241,248,0.35);
       color: inherit;
+    }
+
+    @media (max-width: 860px) {
+      .cascade-slide {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
     }
 
     @media (max-width: 760px) {
@@ -226,6 +361,14 @@
 
       .case-section {
         margin: 26px 0;
+      }
+
+      .metric-card {
+        padding: 12px;
+      }
+
+      .cascade-slide {
+        padding: 14px;
       }
     }
   </style>
@@ -246,7 +389,6 @@
         <li><a href="../index.html#skills">Skills</a></li>
         <li><a href="../index.html#experience">Experience</a></li>
         <li><a href="../index.html#projects">Projects</a></li>
-        <li><a href="../index.html#contact">Contact</a></li>
       </ul>
     </div>
   </nav>
@@ -257,25 +399,26 @@
         <div class="breadcrumb">
           <a href="../index.html#experience">Experience</a>
           <span>›</span>
-          <span>Tata Motors Multi-Body Dynamics Internship</span>
+          <span>Tata Motors K&amp;C and Steady-State Handling Simulation</span>
         </div>
 
-        <h1>Tata Motors — Multi-Body Dynamics Internship</h1>
+        <h1>Tata Motors — K&amp;C and Steady-State Handling Simulation</h1>
 
         <p class="project-intro">
-          Industry internship focused on multi-body vehicle dynamics simulation for compact SUV programmes.
-          The work involved MSC ADAMS-based K&amp;C and steady-state handling studies, parking-brake efficiency
-          simulation support, and MATLAB/Excel post-processing to compare variants and convert simulation outputs
-          into engineering conclusions.
+          Internship project focused on Kinematics &amp; Compliance and steady-state
+          handling analysis of a compact SUV within Tata Motors Passenger Vehicle
+          Engineering. The work involved MBD-based chassis simulation workflows,
+          suspension kinematics, compliance behaviour, steering response, Constant
+          Radius Cornering analysis and CAE-to-test correlation interpretation.
         </p>
 
         <div class="project-tags" style="margin-top: 18px;">
           <span class="tag">MSC ADAMS</span>
-          <span class="tag">Vehicle Dynamics</span>
           <span class="tag">K&amp;C</span>
-          <span class="tag">Handling</span>
-          <span class="tag">MATLAB</span>
-          <span class="tag">Excel</span>
+          <span class="tag">Steady-State Handling</span>
+          <span class="tag">Chassis Simulation</span>
+          <span class="tag">CAE Correlation</span>
+          <span class="tag">Vehicle Dynamics</span>
         </div>
 
         <div class="metric-strip" aria-label="Experience summary">
@@ -285,23 +428,23 @@
           </div>
 
           <div class="metric-card">
-            <strong>MSC ADAMS</strong>
-            <span>primary MBD simulation tool</span>
-          </div>
-
-          <div class="metric-card">
             <strong>K&amp;C</strong>
-            <span>suspension and vehicle behaviour studies</span>
+            <span>kinematics and compliance analysis</span>
           </div>
 
           <div class="metric-card">
-            <strong>Handling</strong>
-            <span>steady-state response analysis</span>
+            <strong>CRC</strong>
+            <span>steady-state handling methodology</span>
           </div>
 
           <div class="metric-card">
-            <strong>Brake simulation</strong>
-            <span>parking-brake efficiency support</span>
+            <strong>MBD</strong>
+            <span>full-vehicle chassis simulation</span>
+          </div>
+
+          <div class="metric-card">
+            <strong>CAE vs Test</strong>
+            <span>correlation-focused interpretation</span>
           </div>
         </div>
       </div>
@@ -312,201 +455,630 @@
         <article class="case-panel">
 
           <section class="case-section">
-            <span class="section-kicker">Role summary</span>
+            <span class="section-kicker">Project summary</span>
             <h2>What this experience demonstrates</h2>
 
             <p>
-              This internship demonstrates applied vehicle dynamics simulation in an automotive OEM environment.
-              The emphasis was on building and analysing repeatable simulation workflows, interpreting vehicle response,
-              and using post-processing to support engineering judgement rather than simply producing raw plots.
+              This internship demonstrates applied vehicle dynamics simulation in an
+              automotive OEM environment. The project focused on how suspension
+              kinematics, compliance characteristics and steering response influence the
+              steady-state handling behaviour of a compact SUV.
+            </p>
+
+            <p>
+              Kinematics and Compliance analysis was used to characterise how the
+              suspension controls wheel orientation and wheel-centre movement through
+              bounce, roll and steering inputs. Compliance behaviour was used to understand
+              how the wheel assembly deflects under lateral and longitudinal loads due to
+              stiffness in bushes, links, tyres and structural components.
+            </p>
+
+            <p>
+              The work connected suspension-level outputs to full-vehicle handling metrics
+              such as understeer gradient, roll gradient, cornering compliance and maximum
+              steady lateral acceleration. This made the project more than a plotting task:
+              it was about using simulation outputs to understand vehicle behaviour.
             </p>
 
             <figure class="hero-figure">
               <img
                 src="Experience/tata-motors-mbd-thumbnail.png"
-                alt="Generic multi-body dynamics thumbnail representing Tata Motors vehicle dynamics simulation work"
+                alt="Generic multi-body dynamics thumbnail representing Tata Motors chassis simulation work"
               />
               <figcaption>
-                Generic NDA-safe visual representing the internship scope: vehicle dynamics, K&amp;C, handling response,
-                parking-brake simulation and post-processing.
+                NDA-safe visual representation of the internship scope: MBD chassis simulation,
+                K&amp;C behaviour, steady-state handling and CAE-to-test interpretation.
               </figcaption>
             </figure>
 
             <div class="nda-banner">
               <strong>Confidentiality note</strong>
-              Detailed vehicle models, internal plots, exact programme data and proprietary simulation outputs are not shown.
-              The work is described at system and workflow level only.
+              Detailed vehicle models, proprietary plots, programme-specific values and
+              internal simulation outputs are not shown. This page uses recreated visuals
+              and explains the work at system, workflow and engineering-interpretation level.
             </div>
           </section>
 
           <section class="case-section">
-            <span class="section-kicker">01 — Technical scope</span>
-            <h2>Areas of Work</h2>
+            <span class="section-kicker">Visual workflow</span>
+            <h2>Chassis Simulation Workflow Gallery</h2>
+
+            <p class="section-lead">
+              The galleries below present recreated, NDA-safe visual sequences of the internship
+              workflow: full-vehicle MBD model development, K&amp;C simulation, steady-state
+              CRC handling analysis and CAE-to-test correlation.
+            </p>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">01 — MBD workflow cascade</span>
+            <h2>Full-Vehicle MBD Workflow</h2>
+
+            <p class="section-lead">
+              The first cascade summarises the model-development route from full-vehicle MBD
+              model structure to virtual K&amp;C and CRC simulation environments.
+            </p>
+
+            <div class="cascade-gallery">
+              <div class="cascade-slide active">
+                <div class="cascade-image">
+                  <img
+                    src="Experience/tata-mbd-full-vehicle-model.png"
+                    alt="Full-vehicle MBD model structure for compact SUV chassis simulation"
+                  />
+                </div>
+
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-3 reference</span>
+                  <h3>Full-vehicle MBD model structure</h3>
+                  <p>
+                    The full-vehicle model was structured using key chassis and vehicle subsystems:
+                    front suspension, rear suspension, steering system, vehicle body, load ballast
+                    system and tyre model. This allowed suspension-level behaviour to be connected
+                    to complete vehicle response.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img
+                    src="Experience/tata-mbd-kc-test-rig.png"
+                    alt="Digital K&C test rig representation for compact SUV MBD simulation"
+                  />
+                </div>
+
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-4 reference</span>
+                  <h3>Digital K&amp;C test-rig environment</h3>
+                  <p>
+                    The digital K&amp;C environment replicated suspension test conditions by
+                    applying controlled wheel motions and loads. This helped evaluate geometry
+                    and compliance behaviour before interpreting full-vehicle handling effects.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img
+                    src="Experience/tata-mbd-virtual-crc-skidpad.png"
+                    alt="Virtual Constant Radius Cornering skid-pad simulation"
+                  />
+                </div>
+
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-16 reference</span>
+                  <h3>Virtual CRC skid-pad simulation</h3>
+                  <p>
+                    The virtual Constant Radius Cornering setup represented the steady-state
+                    handling test environment. It was used to study how the vehicle response
+                    changed as lateral acceleration increased on a constant-radius path.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-controls">
+                <button class="cascade-btn prev" type="button" aria-label="Previous slide">&#10094;</button>
+                <div class="cascade-dots">
+                  <span class="cascade-dot active"></span>
+                  <span class="cascade-dot"></span>
+                  <span class="cascade-dot"></span>
+                </div>
+                <button class="cascade-btn next" type="button" aria-label="Next slide">&#10095;</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">02 — Technical context</span>
+            <h2>Chassis Analysis and Simulations</h2>
+
+            <p class="section-lead">
+              The internship sat within chassis simulation work for passenger vehicles, where
+              digital models are used to support design validation, reduce avoidable physical
+              testing iterations and compare vehicle configurations before committing to
+              hardware changes.
+            </p>
 
             <div class="scope-grid">
               <div class="scope-card">
-                <h3>K&amp;C simulation</h3>
+                <h3>Why MBD was used</h3>
                 <p>
-                  Supported vehicle dynamics studies involving kinematics and compliance behaviour for compact SUV models.
+                  Multi-body dynamics is suited to suspension and steering systems because
+                  the vehicle is made up of linked bodies, joints, bushings, springs, dampers
+                  and tyre forces. It allows engineers to study how component-level motion
+                  affects full-vehicle behaviour.
                 </p>
-                <ul>
-                  <li>Suspension response interpretation</li>
-                  <li>Variant comparison</li>
-                  <li>Handling-relevant parameter review</li>
-                </ul>
+              </div>
+
+              <div class="scope-card">
+                <h3>Full-vehicle model structure</h3>
+                <p>
+                  The full-vehicle model was structured around front suspension, rear suspension,
+                  steering system, vehicle body, load ballast system and tyre model subsystems.
+                </p>
+              </div>
+
+              <div class="scope-card">
+                <h3>Engineering value</h3>
+                <p>
+                  A digital K&amp;C and handling workflow allows more repeatable studies,
+                  faster iteration and earlier identification of suspension characteristics
+                  that may require refinement.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">03 — Kinematics and compliance</span>
+            <h2>K&amp;C Analysis Explained</h2>
+
+            <p>
+              Kinematics describes the geometry-driven motion of the wheels as the suspension
+              moves through its design range. In this project, that included vertical travel,
+              roll behaviour and steering response.
+            </p>
+
+            <p>
+              Compliance describes how much the suspension and wheel assembly deflect under
+              load. This is important because real vehicle behaviour is not defined by rigid
+              geometry alone; bushings, links, tyres and structural components all deform
+              under lateral and longitudinal loads.
+            </p>
+
+            <p>
+              In practical chassis development, K&amp;C acts like a suspension fingerprint.
+              It helps engineers understand toe, camber, caster, bump steer, roll steer,
+              compliance steer, wheel-centre movement and roll-centre characteristics before
+              interpreting the vehicle-level handling response.
+            </p>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">04 — K&amp;C output cascade</span>
+            <h2>K&amp;C Analysis Output Gallery</h2>
+
+            <p class="section-lead">
+              The K&amp;C output gallery shows the main simulation categories studied:
+              front and rear vertical travel, front and rear roll response, steering analysis,
+              front and rear lateral compliance, and front and rear longitudinal compliance.
+            </p>
+
+            <p>
+              These figures are analysis outputs, not direct comparison plots. They show how
+              the suspension and steering system behave under controlled inputs. The comparison
+              stage belongs later in the CAE-versus-test correlation section.
+            </p>
+
+            <div class="cascade-gallery">
+              <div class="cascade-slide active">
+                <div class="cascade-image">
+                  <img src="Experience/tata-kc-front-vertical-analysis.png" alt="Front suspension vertical travel K&C analysis output"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-5 reference</span>
+                  <h3>Front suspension vertical analysis</h3>
+                  <p>
+                    Vertical travel analysis was used to review front suspension behaviour in bounce,
+                    including wheel-rate trend, wheel-centre movement and changes in wheel-angle
+                    characteristics over suspension travel.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img src="Experience/tata-kc-rear-vertical-analysis.png" alt="Rear suspension vertical travel K&C analysis output"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-6 reference</span>
+                  <h3>Rear suspension vertical analysis</h3>
+                  <p>
+                    Rear vertical analysis captured rear-axle suspension response during bounce,
+                    helping assess how rear wheel geometry changed through the vertical travel range.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img src="Experience/tata-kc-front-roll-analysis.png" alt="Front suspension roll K&C analysis output"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-7 reference</span>
+                  <h3>Front suspension roll analysis</h3>
+                  <p>
+                    Front roll analysis helped assess how wheel angles and axle behaviour changed
+                    when the suspension moved in opposite wheel travel, representing body roll conditions.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img src="Experience/tata-kc-rear-roll-analysis.png" alt="Rear suspension roll K&C analysis output"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-8 reference</span>
+                  <h3>Rear suspension roll analysis</h3>
+                  <p>
+                    Rear roll analysis was used to understand rear axle steer and camber response
+                    during roll, which contributes to the vehicle's steady-state balance.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img src="Experience/tata-kc-steering-analysis.png" alt="Steering system K&C analysis output"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-9 reference</span>
+                  <h3>Steering analysis</h3>
+                  <p>
+                    Steering analysis was used to study steering response characteristics such as
+                    turning radius, steering ratio, Ackermann behaviour and inner/outer wheel angle trends.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img src="Experience/tata-kc-front-lateral-compliance.png" alt="Front suspension lateral compliance K&C analysis output"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-10 reference</span>
+                  <h3>Front suspension lateral compliance</h3>
+                  <p>
+                    Front lateral compliance analysis captured how the front wheel assembly deflected
+                    under lateral loading, including effects on compliance steer and camber response.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img src="Experience/tata-kc-rear-lateral-compliance.png" alt="Rear suspension lateral compliance K&C analysis output"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-11 reference</span>
+                  <h3>Rear suspension lateral compliance</h3>
+                  <p>
+                    Rear lateral compliance analysis helped evaluate rear axle deflection behaviour
+                    under lateral force, which affects rear stability and full-vehicle handling balance.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img src="Experience/tata-kc-front-longitudinal-compliance.png" alt="Front suspension longitudinal compliance K&C analysis output"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-12 reference</span>
+                  <h3>Front suspension longitudinal compliance</h3>
+                  <p>
+                    Front longitudinal compliance analysis showed wheel-centre and steering-related
+                    deflections under fore-aft loading, relevant to braking and acceleration response.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img src="Experience/tata-kc-rear-longitudinal-compliance.png" alt="Rear suspension longitudinal compliance K&C analysis output"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-13 reference</span>
+                  <h3>Rear suspension longitudinal compliance</h3>
+                  <p>
+                    Rear longitudinal compliance analysis captured rear wheel deflection behaviour
+                    under fore-aft loading, contributing to the interpretation of ride and handling stability.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-controls">
+                <button class="cascade-btn prev" type="button" aria-label="Previous slide">&#10094;</button>
+                <div class="cascade-dots">
+                  <span class="cascade-dot active"></span>
+                  <span class="cascade-dot"></span>
+                  <span class="cascade-dot"></span>
+                  <span class="cascade-dot"></span>
+                  <span class="cascade-dot"></span>
+                  <span class="cascade-dot"></span>
+                  <span class="cascade-dot"></span>
+                  <span class="cascade-dot"></span>
+                  <span class="cascade-dot"></span>
+                </div>
+                <button class="cascade-btn next" type="button" aria-label="Next slide">&#10095;</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">05 — Steady-state handling</span>
+            <h2>Constant Radius Cornering and Handling Response</h2>
+
+            <p>
+              Steady-state handling describes how the vehicle responds to steering input when
+              it is cornering in a controlled and repeatable condition. The method used in the
+              report was Constant Radius Cornering, where the vehicle follows a circular path
+              while speed is gradually increased.
+            </p>
+
+            <p>
+              As speed increases, lateral acceleration builds and the steering input required
+              to maintain the same radius changes. This relationship is captured through the
+              understeer gradient, which helps describe whether the vehicle tends towards
+              understeer, neutral steer or oversteer.
+            </p>
+
+            <p>
+              The handling study also considered cornering compliance, roll gradient and
+              maximum steady lateral acceleration. These metrics connect suspension behaviour
+              to the driver-facing response of the vehicle.
+            </p>
+
+            <div class="cascade-gallery">
+              <div class="cascade-slide active">
+                <div class="cascade-image">
+                  <img src="Experience/tata-crc-understeer-gradient.png" alt="Understeer gradient concept used in steady-state handling analysis"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-14 reference</span>
+                  <h3>Understeer gradient concept</h3>
+                  <p>
+                    Understeer gradient describes how steering demand changes as lateral
+                    acceleration increases. It is a key steady-state handling metric because it
+                    helps classify whether the vehicle response is understeering, neutral or oversteering.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img src="Experience/tata-crc-skidpad-methodology.png" alt="Constant Radius Cornering skid-pad methodology"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-15 reference</span>
+                  <h3>Physical CRC skid-pad methodology</h3>
+                  <p>
+                    The Constant Radius Cornering method uses a defined circular path while
+                    vehicle speed is increased gradually. This allows lateral acceleration and
+                    steering response to be captured in a repeatable steady-state condition.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img src="Experience/tata-crc-virtual-skidpad.png" alt="Virtual CRC skid-pad simulation in MBD software"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Figure 3-16 reference</span>
+                  <h3>Virtual CRC simulation</h3>
+                  <p>
+                    The virtual CRC simulation allowed handling response to be evaluated within
+                    the MBD environment, linking suspension characteristics to full-vehicle
+                    cornering behaviour.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-controls">
+                <button class="cascade-btn prev" type="button" aria-label="Previous slide">&#10094;</button>
+                <div class="cascade-dots">
+                  <span class="cascade-dot active"></span>
+                  <span class="cascade-dot"></span>
+                  <span class="cascade-dot"></span>
+                </div>
+                <button class="cascade-btn next" type="button" aria-label="Next slide">&#10095;</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">06 — Correlation</span>
+            <h2>CAE Model Versus Test Correlation</h2>
+
+            <p>
+              The final stage was CAE-model-versus-test interpretation. This matters because
+              a simulation model is useful only when it reproduces the key physical trends
+              with enough confidence for engineering decision-making.
+            </p>
+
+            <p>
+              The report presents similarity results across suspension kinematics, steering
+              kinematics, suspension compliance and steady-state handling. The compared
+              parameters include wheel rate, bump steer, camber change, caster change, roll
+              stiffness, roll-centre height, steering angles, compliance steer, understeer
+              gradient, cornering compliance, maximum steady lateral acceleration and roll
+              gradient.
+            </p>
+
+            <p>
+              For the public portfolio, this should be shown as a recreated correlation-summary
+              visual rather than raw internal tables. The message is that the model was
+              evaluated for correlation quality, not that confidential test data is being published.
+            </p>
+
+            <div class="cascade-gallery">
+              <div class="cascade-slide active">
+                <div class="cascade-image">
+                  <img src="Experience/tata-correlation-suspension-kinematics.png" alt="Suspension kinematics CAE versus test correlation summary"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Table 3-1 reference</span>
+                  <h3>Suspension kinematics correlation</h3>
+                  <p>
+                    Suspension kinematics correlation covered static geometry, vertical characteristics
+                    and roll characteristics, including parameters such as toe, camber, caster,
+                    wheel rate, bump steer, roll stiffness and roll-centre height.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img src="Experience/tata-correlation-steering-kinematics.png" alt="Steering kinematics CAE versus test correlation summary"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Table 3-2 reference</span>
+                  <h3>Steering kinematics correlation</h3>
+                  <p>
+                    Steering kinematics correlation focused on steering-system outputs such as
+                    maximum inner wheel angle, maximum outer wheel angle and turning-circle diameter.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img src="Experience/tata-correlation-suspension-compliance.png" alt="Suspension compliance CAE versus test correlation summary"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Table 3-3 reference</span>
+                  <h3>Suspension compliance correlation</h3>
+                  <p>
+                    Suspension compliance correlation covered front and rear elasto-kinematic
+                    behaviour under longitudinal and lateral loading, including wheel-centre
+                    compliance, compliance steer and camber change.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-slide">
+                <div class="cascade-image">
+                  <img src="Experience/tata-correlation-handling-results.png" alt="Steady-state handling CAE versus test correlation summary"/>
+                </div>
+                <div class="cascade-text">
+                  <span class="slide-label">Table 3-4 reference</span>
+                  <h3>Steady-state handling correlation</h3>
+                  <p>
+                    Handling correlation covered understeer in the linear range, front and rear
+                    cornering compliance, understeer linearity range, maximum steady lateral
+                    acceleration and roll gradient.
+                  </p>
+                </div>
+              </div>
+
+              <div class="cascade-controls">
+                <button class="cascade-btn prev" type="button" aria-label="Previous slide">&#10094;</button>
+                <div class="cascade-dots">
+                  <span class="cascade-dot active"></span>
+                  <span class="cascade-dot"></span>
+                  <span class="cascade-dot"></span>
+                  <span class="cascade-dot"></span>
+                </div>
+                <button class="cascade-btn next" type="button" aria-label="Next slide">&#10095;</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">07 — Engineering interpretation</span>
+            <h2>What the Work Showed</h2>
+
+            <div class="reflection-grid">
+              <div class="reflection-card">
+                <h3>K&amp;C defines the suspension fingerprint</h3>
+                <p>
+                  K&amp;C outputs showed how suspension geometry and compliance characteristics
+                  influence wheel orientation, wheel-centre movement and steering response.
+                </p>
+              </div>
+
+              <div class="reflection-card">
+                <h3>Subsystem behaviour affects full-vehicle handling</h3>
+                <p>
+                  Characteristics such as roll steer, compliance steer, camber change and roll stiffness
+                  distribution influence understeer gradient, cornering response and vehicle stability.
+                </p>
+              </div>
+
+              <div class="reflection-card">
+                <h3>Correlation gives confidence</h3>
+                <p>
+                  CAE-to-test similarity checks help establish whether the simulation model can be
+                  trusted for development decisions or whether further model refinement is required.
+                </p>
+              </div>
+
+              <div class="reflection-card">
+                <h3>Simulation reduces iteration cost</h3>
+                <p>
+                  A validated digital workflow allows more iterations to be explored before committing
+                  to physical prototype testing.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="case-section">
+            <span class="section-kicker">08 — Skills developed</span>
+            <h2>Technical Skills Strengthened</h2>
+
+            <div class="scope-grid">
+              <div class="scope-card">
+                <h3>Multi-body dynamics</h3>
+                <p>
+                  Full-vehicle MBD model interpretation, subsystem assembly logic and simulation
+                  workflow understanding for passenger vehicle chassis analysis.
+                </p>
+              </div>
+
+              <div class="scope-card">
+                <h3>K&amp;C interpretation</h3>
+                <p>
+                  Understanding of vertical travel, roll behaviour, steering characteristics, lateral
+                  compliance and longitudinal compliance outputs.
+                </p>
               </div>
 
               <div class="scope-card">
                 <h3>Steady-state handling</h3>
                 <p>
-                  Worked with ADAMS handling simulation outputs to assess vehicle response trends and compare behaviour
-                  across configurations.
-                </p>
-                <ul>
-                  <li>Yaw and lateral response trends</li>
-                  <li>Vehicle variant comparison</li>
-                  <li>Simulation-output interpretation</li>
-                </ul>
-              </div>
-
-              <div class="scope-card">
-                <h3>Parking-brake efficiency</h3>
-                <p>
-                  Supported parking-brake efficiency simulation by modelling brake-system behaviour and interpreting
-                  force-transfer response.
-                </p>
-                <ul>
-                  <li>Brake mechanism behaviour</li>
-                  <li>Force-transfer interpretation</li>
-                  <li>Efficiency-focused simulation support</li>
-                </ul>
-              </div>
-
-              <div class="scope-card">
-                <h3>Post-processing</h3>
-                <p>
-                  Used MATLAB and Excel workflows to organise simulation outputs, compare variants and communicate
-                  engineering conclusions clearly.
-                </p>
-                <ul>
-                  <li>MATLAB-based analysis</li>
-                  <li>Excel comparison dashboards</li>
-                  <li>Repeatable output review</li>
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          <section class="case-section">
-            <span class="section-kicker">02 — Workflow</span>
-            <h2>Simulation-to-Insight Workflow</h2>
-
-            <p class="section-lead">
-              The main value of the internship was learning how vehicle dynamics simulation fits into engineering
-              decision-making inside an OEM. The workflow connected simulation setup, repeatable execution,
-              post-processing and engineering interpretation.
-            </p>
-
-            <div class="workflow-grid">
-              <div class="workflow-card">
-                <h3>1. Model setup and execution</h3>
-                <p>
-                  Worked with MSC ADAMS models and simulation procedures for vehicle dynamics and brake-related studies.
-                </p>
-              </div>
-
-              <div class="workflow-card">
-                <h3>2. Response extraction</h3>
-                <p>
-                  Reviewed simulation outputs relevant to K&amp;C behaviour, handling response and parking-brake performance.
-                </p>
-              </div>
-
-              <div class="workflow-card">
-                <h3>3. Variant comparison</h3>
-                <p>
-                  Used MATLAB and Excel to compare outputs across vehicle configurations and identify behaviour changes.
-                </p>
-              </div>
-
-              <div class="workflow-card">
-                <h3>4. Engineering conclusion</h3>
-                <p>
-                  Converted simulation data into practical observations that could support system-level engineering review.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          <section class="case-section">
-            <span class="section-kicker">03 — Engineering value</span>
-            <h2>What I Took Ownership Of</h2>
-
-            <div class="reflection-grid">
-              <div class="reflection-card">
-                <h3>Vehicle dynamics interpretation</h3>
-                <p>
-                  Developed a stronger understanding of how K&amp;C and handling simulations are used to evaluate vehicle
-                  response before physical testing.
-                </p>
-              </div>
-
-              <div class="reflection-card">
-                <h3>Brake-system simulation support</h3>
-                <p>
-                  Supported simulation work related to parking-brake efficiency, focusing on brake-system behaviour
-                  and force-transfer interpretation.
-                </p>
-              </div>
-
-              <div class="reflection-card">
-                <h3>Data processing discipline</h3>
-                <p>
-                  Built confidence in handling simulation outputs, organising comparisons and creating repeatable
-                  analysis workflows using MATLAB and Excel.
-                </p>
-              </div>
-
-              <div class="reflection-card">
-                <h3>OEM engineering exposure</h3>
-                <p>
-                  Gained experience working in a structured automotive engineering environment where simulation results
-                  need to be traceable, comparable and useful for design review.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          <section class="case-section">
-            <span class="section-kicker">04 — Skills developed</span>
-            <h2>Technical Skills Strengthened</h2>
-
-            <div class="scope-grid">
-              <div class="scope-card">
-                <h3>MSC ADAMS</h3>
-                <p>
-                  Multi-body dynamics model execution, vehicle response review and simulation-output interpretation.
+                  Interpretation of understeer gradient, cornering compliance, roll gradient and lateral
+                  acceleration response through CRC methodology.
                 </p>
               </div>
 
               <div class="scope-card">
-                <h3>Vehicle dynamics</h3>
+                <h3>CAE correlation</h3>
                 <p>
-                  K&amp;C behaviour, steady-state handling response, yaw/lateral behaviour and system-level interpretation.
-                </p>
-              </div>
-
-              <div class="scope-card">
-                <h3>MATLAB / Excel</h3>
-                <p>
-                  Post-processing, comparison workflows, data visualisation and structured review of simulation outputs.
+                  Comparison of simulation behaviour against test-based parameters to assess model
+                  credibility and guide refinement.
                 </p>
               </div>
 
               <div class="scope-card">
                 <h3>Engineering communication</h3>
                 <p>
-                  Presenting simulation-driven observations clearly while respecting confidentiality and internal data control.
+                  Translating technical simulation outputs into clear, defensible conclusions for
+                  vehicle dynamics development.
                 </p>
               </div>
             </div>
@@ -520,5 +1092,56 @@
       </div>
     </section>
   </main>
+
+  <script>
+    (function () {
+      const galleries = document.querySelectorAll(".cascade-gallery");
+
+      galleries.forEach((gallery) => {
+        const slides = gallery.querySelectorAll(".cascade-slide");
+        const dots = gallery.querySelectorAll(".cascade-dot");
+        const prevBtn = gallery.querySelector(".prev");
+        const nextBtn = gallery.querySelector(".next");
+
+        let current = 0;
+
+        function showSlide(index) {
+          slides.forEach((slide, i) => {
+            slide.classList.toggle("active", i === index);
+          });
+
+          dots.forEach((dot, i) => {
+            dot.classList.toggle("active", i === index);
+          });
+
+          current = index;
+        }
+
+        function nextSlide() {
+          const next = current + 1 >= slides.length ? 0 : current + 1;
+          showSlide(next);
+        }
+
+        function prevSlide() {
+          const prev = current - 1 < 0 ? slides.length - 1 : current - 1;
+          showSlide(prev);
+        }
+
+        if (nextBtn) {
+          nextBtn.addEventListener("click", nextSlide);
+        }
+
+        if (prevBtn) {
+          prevBtn.addEventListener("click", prevSlide);
+        }
+
+        dots.forEach((dot, index) => {
+          dot.addEventListener("click", () => showSlide(index));
+        });
+
+        showSlide(0);
+      });
+    })();
+  </script>
 </body>
 </html>
